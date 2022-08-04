@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
@@ -17,7 +18,7 @@ import java.util.Timer;
 
 @SpringBootApplication
 @EnableFeignClients
-
+@EnableScheduling
 public class NardaApplication {
     @Bean
     public Timer getTimer() {

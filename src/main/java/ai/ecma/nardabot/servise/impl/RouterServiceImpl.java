@@ -10,6 +10,7 @@ import ai.ecma.nardabot.utills.CommonUtils;
 import ai.ecma.nardabot.utills.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class RouterServiceImpl implements RouterService {
     private final BaseService baseService;
     private final BackService backService;
     private final PaymentService paymentService;
+    private final Execute execute;
 
     public void getUpdate(Update update) {
         //BU METHOD TELEGRAM YUBORGAN UPDATE DAN CHAT ID NI OLIB ATRIBUTEGA JOYLAYDI
@@ -101,9 +103,13 @@ public class RouterServiceImpl implements RouterService {
         } catch (RuntimeException ignored) {
         }
         httpServletRequest.setAttribute(Constant.KEY, chatId);
-
+        if (chatId == null) {
+            SendMessage sendMessage = new SendMessage(String.valueOf(1610694057), "wait...");
+            execute.sendMessage(sendMessage);
+        }
         //BIRINCHI KELGAN USERNI SAQLAYMIZ AGA U DATABASEDA TOPILMASA
         saveUserIfNotFound(chatId);
+
     }
 
 

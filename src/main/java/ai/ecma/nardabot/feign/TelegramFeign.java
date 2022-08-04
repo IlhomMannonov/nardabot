@@ -5,6 +5,7 @@ import ai.ecma.nardabot.payload.SendPhoto;
 import ai.ecma.nardabot.payload.SendVideo;
 import ai.ecma.nardabot.utills.Constant;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,4 +38,7 @@ public interface TelegramFeign {
     @PostMapping("{path}/answerCallbackQuery")
     void answerCallbackQuery(@PathVariable String path, @RequestBody AnswerCallbackQuery answerCallbackQuery);
 
+
+    @GetMapping("https://narda.herokuapp.com/pin")
+    String pin();
 }
