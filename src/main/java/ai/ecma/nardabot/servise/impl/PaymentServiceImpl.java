@@ -82,6 +82,8 @@ public class PaymentServiceImpl implements PaymentService {
             String text = update.getMessage().getText();
             BigDecimal sum = null;
             try {
+                if (text.length() >= 11)
+                    throw new Exception();
                 sum = new BigDecimal(text);
             } catch (Exception ignore) {
                 sendMessage.setText(langTextService.getTxt(user, "Iltimos to'g'ri pul miqdorini kiriting", "Please enter the correct amount", "Пожалуйста, введите правильную сумму"));
@@ -134,10 +136,12 @@ public class PaymentServiceImpl implements PaymentService {
 //                baseService.setState(user, State.HOME);
 //                return;
 //            }
-
+            String text = update.getMessage().getText();
             BigDecimal amount = null;
             try {
-                amount = new BigDecimal(update.getMessage().getText());
+                if (text.length() >= 11)
+                    throw new Exception();
+                amount = new BigDecimal(text);
             } catch (Exception ignore) {
                 sendMessage.setText(langTextService.getTxt(user, "Iltimos to'g'ri pul miqdorini kiriting", "Please enter the correct amount", "Пожалуйста, введите правильную сумму"));
                 execute.sendMessage(sendMessage);

@@ -5,6 +5,7 @@ import ai.ecma.nardabot.payload.RestTelegram;
 import ai.ecma.nardabot.payload.SendPhoto;
 import ai.ecma.nardabot.payload.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -23,4 +24,6 @@ public interface Execute {
     void sendPhoto(SendPhoto sendPhoto);
 
     void sendVideo(SendVideo sendVideo);
+
+    void sendInvoice(SendInvoice sendInvoice);
 }

@@ -143,10 +143,10 @@ public class NardaServiceImpl implements NardaService {
         switch (data) {
             case "min":
                 narda.setAmount(Constant.MIN_BET);
-                return true;
+                return !Objects.equals(Constant.MIN_BET, narda.getAmount());
             case "max":
                 narda.setAmount(Constant.MAX_BET);
-                return true;
+                return !Objects.equals(Constant.MAX_BET, narda.getAmount());
             case "x2":
                 //GAROV MIQDORI CHEKLANGAN MIQDORDAN OSHSA QAYTARAMIZ
                 int compareTo = Constant.MAX_BET.compareTo(narda.getAmount().add(narda.getAmount()));
@@ -230,8 +230,6 @@ public class NardaServiceImpl implements NardaService {
 
 
     }
-
-
 
 
     public NardaState generateGame(NardaType type) {

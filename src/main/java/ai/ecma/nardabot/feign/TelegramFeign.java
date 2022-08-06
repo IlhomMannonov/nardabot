@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -39,6 +40,6 @@ public interface TelegramFeign {
     void answerCallbackQuery(@PathVariable String path, @RequestBody AnswerCallbackQuery answerCallbackQuery);
 
 
-    @GetMapping("https://narda.herokuapp.com/pin")
-    String pin();
+    @PostMapping("{path}/sendInvoice")
+    void sendInvoice(@PathVariable String path, SendInvoice sendInvoice);
 }

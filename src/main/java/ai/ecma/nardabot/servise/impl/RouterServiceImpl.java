@@ -10,8 +10,10 @@ import ai.ecma.nardabot.utills.CommonUtils;
 import ai.ecma.nardabot.utills.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -33,6 +35,20 @@ public class RouterServiceImpl implements RouterService {
     private final Execute execute;
 
     public void getUpdate(Update update) {
+
+//        SendInvoice build = SendInvoice.builder()
+//                .chatId(update.getMessage().getChatId().toString())
+//                .title("hello")
+//                .description("this is description")
+//                .payload("this is payload")
+//                .providerToken("1650291590:TEST:1659719439563_CiU10zPxZCvaKh0C")
+//                .startParameter("500")
+//                .price(new LabeledPrice("So'm",545464))
+//                .currency("UZS").build();
+//        execute.sendInvoice(build);
+
+
+
         //BU METHOD TELEGRAM YUBORGAN UPDATE DAN CHAT ID NI OLIB ATRIBUTEGA JOYLAYDI
         filter(update);
         //logig

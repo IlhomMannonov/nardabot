@@ -9,6 +9,7 @@ import ai.ecma.nardabot.utills.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -54,5 +55,10 @@ public class ExecuteImpl implements Execute {
     @Override
     public void sendVideo(SendVideo sendVideo) {
         feign.sendVideo(BOT, sendVideo);
+    }
+
+    @Override
+    public void sendInvoice(SendInvoice sendInvoice) {
+        feign.sendInvoice(BOT, sendInvoice);
     }
 }
