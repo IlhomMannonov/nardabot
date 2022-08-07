@@ -3,9 +3,7 @@ package ai.ecma.nardabot.controller.impl;
 import ai.ecma.nardabot.controller.abs.ClientController;
 import ai.ecma.nardabot.servise.abs.RouterService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequiredArgsConstructor
 public class ClientControllerImpl implements ClientController {
-    @Autowired
-    private RouterService routerService;
+
+    private final RouterService routerService;
+
 
 
     @Override
@@ -24,6 +23,11 @@ public class ClientControllerImpl implements ClientController {
         routerService.getUpdate(update);
 
 
-
     }
+
+    @Override
+    public String pin() {
+        return "ok";
+    }
+
 }

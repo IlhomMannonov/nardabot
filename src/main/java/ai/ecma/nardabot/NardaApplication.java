@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
@@ -21,8 +22,8 @@ import java.util.Timer;
 @EnableScheduling
 public class NardaApplication {
     @Bean
-    public Timer getTimer() {
-        return new Timer();
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
     }
     public static void main(String[] args) {
 //        String s = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
