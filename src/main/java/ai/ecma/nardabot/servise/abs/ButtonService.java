@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 public interface ButtonService {
-    InlineKeyboardMarkup getInlineBtn(User user);
+    InlineKeyboardMarkup getInlineBtn(User user, String id);
 
     ReplyKeyboardMarkup getBtn(User user);
 

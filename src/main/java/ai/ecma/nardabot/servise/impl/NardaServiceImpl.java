@@ -50,7 +50,7 @@ public class NardaServiceImpl implements NardaService {
         SendPhoto sendPhoto = SendPhoto.builder()
                 .photo("AgACAgIAAxkBAAIJhmJxQH1IYJTRPj4t6pA-HIMnno3bAALZuzEb7beISx0lVE7RxpMAAQEAAwIAA3kAAyQE")
                 .caption(langTextService.text(user))
-                .replyMarkup(buttonService.getInlineBtn(user))
+                .replyMarkup(buttonService.getInlineBtn(user,""))
                 .chatId(user.getChatId())
                 .build();
         execute.sendPhoto(sendPhoto);
@@ -169,7 +169,7 @@ public class NardaServiceImpl implements NardaService {
     private void editMessage(Update update, User user) {
         EditMessageCaption editMessageCaption = EditMessageCaption.builder()
                 .caption(langTextService.text(user))
-                .replyMarkup(buttonService.getInlineBtn(user))
+                .replyMarkup(buttonService.getInlineBtn(user,""))
                 .chatId(user.getChatId())
                 .messageId(update.getCallbackQuery().getMessage().getMessageId())
                 .build();

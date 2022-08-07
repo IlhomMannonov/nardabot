@@ -53,10 +53,11 @@ public class PaymentServiceImpl implements PaymentService {
     public void withdraw(Update update, User user) {
 
         baseService.setState(user, State.WITHDRAW);
+
         SendMessage sendMessage = SendMessage.builder()
                 .text(langTextService.getTxt(user, "Chiqarmoqchi bo'lgan pul miqdorini yozing", "Enter the amount you want to withdraw", "Введите сумму, которую хотите вывести"))
                 .chatId(user.getChatId())
-//                .replyMarkup(buttonService.getBtn(user))
+                .replyMarkup(buttonService.getBtn(user))
                 .build();
         execute.sendMessage(sendMessage);
     }
@@ -73,9 +74,12 @@ public class PaymentServiceImpl implements PaymentService {
             //AGAR ESKI TOLOV TO'LANMAGAN BO'LSA
             Optional<PayHistory> optionalPayHistory = payHistoryRepo.findFirstByUserIdAndActionOrderByCreatedAtDesc(user.getId(), PayStatus.IN);
             if (optionalPayHistory.isPresent() && optionalPayHistory.get().getStatus().name().equals(PayStatus.PENDING.name())) {
+                baseService.setState(user, State.HOME);
+                sendMessage.setReplyMarkup(buttonService.getBtn(user));
                 sendMessage.setText(langTextService.getTxt(user, "Siz <b>" + optionalPayHistory.get().getOrderCode() + "</b> raqamli tolovni amalga oshirmagansiz!\nTo'lovni 10 daqiqa ichida amalga oshiring yoki bu tolov bekor qilinadi", "You have not made a digital payment <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nMake a payment within 10 minutes or this payment will be canceled", "Вы не совершали цифровой платеж <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nПроведите платеж в течение 10 минут, иначе этот платеж будет отменен"));
                 execute.sendMessage(sendMessage);
                 //AKS HOLDA
+
                 return;
             }
 
@@ -150,9 +154,10 @@ public class PaymentServiceImpl implements PaymentService {
             int to = amount.compareTo(user.getBalance());
             int minWithdraw = Constant.MIN_WITHDRAW.compareTo(amount);
             if (to > 0) {
-                sendMessage.setText(langTextService.getTxt(user, "Hisobingizda chiqarish mablag yetarli emas", "You don't have enough funds to withdraw from your account", "У вас недостаточно средств для вывода средств со счета"));
-                execute.sendMessage(sendMessage);
                 baseService.setState(user, State.HOME);
+                sendMessage.setText(langTextService.getTxt(user, "Hisobingizda chiqarish mablag yetarli emas", "You don't have enough funds to withdraw from your account", "У вас недостаточно средств для вывода средств со счета"));
+              sendMessage.setReplyMarkup(buttonService.getBtn(user));
+                execute.sendMessage(sendMessage);
                 return;
             }
             if (minWithdraw > 0) {

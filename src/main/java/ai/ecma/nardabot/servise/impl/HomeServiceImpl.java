@@ -9,7 +9,6 @@ import ai.ecma.nardabot.repository.UserRepo;
 import ai.ecma.nardabot.servise.abs.*;
 import ai.ecma.nardabot.utills.CommonUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.spel.spi.Function;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,7 +16,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -86,16 +84,17 @@ public class HomeServiceImpl implements HomeService {
         } else {
             List<PayHistory> payHistories = payHistoryRepo.findAllByUserId(user.getId());
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
-
+            baseService.setState(user, State.HISTORY);
             for (PayHistory payHistory : payHistories) {
-
                 String sb = langTextService.getTxt(user,
-                        (payHistory.getAction().equals(PayStatus.IN) ? "Pul Soluvchi: " : "Pul chiqaruvchi: ") + "<b>" + user.getName() + "</b>" + "\nTo'lov turi: " + payHistory.getPayType().getType().name() + "\nTo'lov summasi: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " So'm</b>" + "\n" + "Holat: " + getStatus(user, payHistory.getStatus()) + "\nVaqt: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n",
-                        (payHistory.getAction().equals(PayStatus.IN) ? "Money came: " : "Money came out: ") + "<b>" + user.getName() + "</b>" + "\nPayment Type: " + payHistory.getPayType().getType().name() + "\nPayment Amount: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Sum</b>" + "\n" + "Status: " + getStatus(user, payHistory.getStatus()) + "\nTime: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n",
-                        (payHistory.getAction().equals(PayStatus.IN) ? "Пришли деньги: " : "Деньги вышли: ") + "<b>" + user.getName() + "</b>" + "\nТип платежа: " + payHistory.getPayType().getType().name() + "\nСумма платежа: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Сум</b>" + "\n" + "Статус: " + getStatus(user, payHistory.getStatus()) + "\nВремя: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n");
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Pul Soluvchi: " : "⤴️ Pul chiqaruvchi: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 To'lov turi: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 To'lov summasi: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " So'm</b>" + "\n" + "Holat: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Vaqt: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n",
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Money came: " : "⤴️ Money came out: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Payment Type: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Payment Amount: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Sum</b>" + "\n" + "Status: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Time: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n",
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Пришли деньги: " : "⤴️ Деньги вышли: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Тип платежа: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Сумма платежа: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Сум</b>" + "\n" + "Статус: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Время: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n");
                 sendMessage.setText(sb);
+                sendMessage.setReplyMarkup(buttonService.getInlineBtn(user, "history:" + payHistory.getId()));
                 execute.sendMessage(sendMessage);
             }
+            baseService.setState(user, State.HOME);
 //            sb.append("\n\n").append(langTextService.getTxt(user, "Bu yerda oxirgi 10 ta Tolovlar tarixi turadi!", "Here is the history of the last 10 payments!", "Здесь история последних 10 платежей!"));
         }
 
@@ -103,11 +102,11 @@ public class HomeServiceImpl implements HomeService {
 
     private String getStatus(User user, PayStatus status) {
         if (status.equals(PayStatus.PENDING)) {
-            return langTextService.getTxt(user, "<b>Kutilmoqda</b>", "<b>Pending</b>", "<b>В ожидании</b>");
+            return langTextService.getTxt(user, "<b>⏳ Kutilmoqda</b>", "<b>⏳ Pending</b>", "<b>⏳ В ожидании</b>");
         } else if (status.equals(PayStatus.PAYED)) {
-            return langTextService.getTxt(user, "<b>To'langan</b>", "<b>Payed</b>", "<b>Оплачено</b>");
+            return langTextService.getTxt(user, "<b>✅ To'langan</b>", "<b>✅ Payed</b>", "<b>✅ Оплачено</b>");
         } else if (status.equals(PayStatus.REJECT)) {
-            return langTextService.getTxt(user, "<b>Rad etildi</b>", "<b>Reject</b>", "<b>Было отказано</b>");
+            return langTextService.getTxt(user, "<b>❌ Rad etildi</b>", "<b>❌ Reject</b>", "<b>❌ Было отказано</b>");
         }
         return null;
     }

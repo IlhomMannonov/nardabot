@@ -23,7 +23,7 @@ public class ButtonServiceImpl implements ButtonService {
     private final NardaRepo nardaRepo;
 
     @Override
-    public InlineKeyboardMarkup getInlineBtn(User user) {
+    public InlineKeyboardMarkup getInlineBtn(User user, String id) {
         InlineKeyboardMarkup markup = null;
         State value = State.values()[user.getState().ordinal()];
         switch (value) {
@@ -68,6 +68,12 @@ public class ButtonServiceImpl implements ButtonService {
                                 btn.button(langTextService.getTxt(user, "", "", ""), "")
                         )
                 );
+                break;
+            case HISTORY:
+                markup = btn.markup(btn.row(
+                        btn.button(langTextService.getTxt(user, "\uD83D\uDDD1 O'chirish", "\uD83D\uDDD1 Delete", "\uD83D\uDDD1 Удалить"), id)
+                ));
+                break;
         }
 
         return markup;
@@ -111,8 +117,8 @@ public class ButtonServiceImpl implements ButtonService {
                         )
                 );
 
-            case PAYMENT_ENTER_SUM:
             case WITHDRAW:
+            case PAYMENT_ENTER_SUM:
                 return btn.markupReplay(
                         btn.rowList(
                                 btn.row(btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false))

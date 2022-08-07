@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
         baseService.setState(user, State.CHOICE_LANG);
 
         execute.sendMessage(SendMessage.builder()
-                .replyMarkup(buttonService.getInlineBtn(user))
+                .replyMarkup(buttonService.getInlineBtn(user,""))
                 .text("Please choice your language")
                 .chatId(user.getChatId())
                 .build());
