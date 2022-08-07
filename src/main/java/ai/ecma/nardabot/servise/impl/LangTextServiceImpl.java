@@ -55,8 +55,8 @@ public class LangTextServiceImpl implements LangTextService {
             case NARDA:
                 text = getTxt(user,
                         " Kerakli usulni tanlang va pul tiking\n❕ Summani qolda yozishingiz ham mumkin\n⚜️ Agar tanlagan usulingizga nardalar mos kelsa siz g'olibsiz\n\n" + "⬆️ 7 dan yuqori (" + Constant.NARDA_KF_OVER + ")KF,\n⏺ 7 -> (" + Constant.NARDA_KF_MIDDLE + ")KF,\n⬇️ 7 dan quyi ("+ Constant.NARDA_KF_LOWER+")KF",
-                        " Выберите нужный метод и сделайте ставку\n❕ Вы также можете написать сумму\n⚜️ Если нарды соответствуют выбранному вами методу, вы выиграли\n\n"+"⬆️ Больше 7 (" + Constant.NARDA_KF_OVER + ")KF,\n⏺ 7 -> (" + Constant.NARDA_KF_MIDDLE + ")KF,\n⬇️ Меньше 7 ("+ Constant.NARDA_KF_LOWER+")KF",
-                        " Choose the method you want and place your bet\n❕ You can also write the sum \n⚜️ If backgammon matches your chosen method, you win +\n\n"+"⬆️ over 7 (" + Constant.NARDA_KF_OVER + ")KF,\n⏺️ 7 -> (" + Constant.NARDA_KF_MIDDLE + ")KF,\n⬇️ under 7 ("+ Constant.NARDA_KF_LOWER+")KF");
+                        " Choose the method you want and place your bet\n❕ You can also write the sum \n⚜️ If backgammon matches your chosen method, you win +\n\n"+"⬆️ over 7 (" + Constant.NARDA_KF_OVER + ")KF,\n⏺️ 7 -> (" + Constant.NARDA_KF_MIDDLE + ")KF,\n⬇️ under 7 ("+ Constant.NARDA_KF_LOWER+")KF",
+                        " Выберите нужный метод и сделайте ставку\n❕ Вы также можете написать сумму\n⚜️ Если нарды соответствуют выбранному вами методу, вы выиграли\n\n"+"⬆️ Больше 7 (" + Constant.NARDA_KF_OVER + ")KF,\n⏺ 7 -> (" + Constant.NARDA_KF_MIDDLE + ")KF,\n⬇️ Меньше 7 ("+ Constant.NARDA_KF_LOWER+")KF");
         }
         return text;
     }

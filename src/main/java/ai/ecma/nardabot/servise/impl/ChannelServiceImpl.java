@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -54,20 +55,23 @@ public class ChannelServiceImpl implements ChannelService {
             String[] split = data.split(":");
             if (Objects.equals(split[0], "channel")) {
                 UUID id = UUID.fromString(split[2]);
-                PayHistory payHistory = payHistoryRepo.getReferenceById(id);
-                switch (split[1]) {
-                    case "payed":
-                        payHistory.setStatus(PayStatus.PAYED);
-                        User user = payHistory.getUser();
-                        user.setBalance(user.getBalance().add(payHistory.getAmount()));
-                        userRepo.save(user);
-                        break;
-                    case "reject":
-                        payHistory.setStatus(PayStatus.REJECT);
-                        break;
+                Optional<PayHistory> optional = payHistoryRepo.findById(id);
+                if (optional.isPresent()) {
+                    PayHistory payHistory = optional.get();
+                    switch (split[1]) {
+                        case "payed":
+                            payHistory.setStatus(PayStatus.PAYED);
+                            User user = payHistory.getUser();
+                            user.setBalance(user.getBalance().add(payHistory.getAmount()));
+                            userRepo.save(user);
+                            break;
+                        case "reject":
+                            payHistory.setStatus(PayStatus.REJECT);
+                            break;
+                    }
+                    payHistoryRepo.save(payHistory);
                 }
-                execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(),Constant.CHANEL_ID);
-                payHistoryRepo.save(payHistory);
+                execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), Constant.CHANEL_ID);
 
 
             }
