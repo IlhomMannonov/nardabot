@@ -3,6 +3,7 @@ package ai.ecma.nardabot.servise.impl;
 import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.Lang;
 import ai.ecma.nardabot.enums.State;
+import ai.ecma.nardabot.repository.PayHistoryRepo;
 import ai.ecma.nardabot.repository.UserRepo;
 import ai.ecma.nardabot.servise.abs.*;
 import ai.ecma.nardabot.utills.CommonUtils;
@@ -10,8 +11,12 @@ import ai.ecma.nardabot.utills.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
     private final Execute execute;
     private final ButtonService buttonService;
     private final LangTextService langTextService;
+    private final PayHistoryRepo payHistoryRepo;
 
     private final BaseService baseService;
 
@@ -54,6 +60,23 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
                 .chatId(user.getChatId())
                 .build();
         execute.sendMessage(sendMessage);
+    }
+
+    @Override
+    public void deleteHistory(Update update) {
+        User user = CommonUtils.getUser();
+        String data = update.getCallbackQuery().getData();
+        String[] split = data.split(":");
+        if (Objects.equals(split[0], "history")) {
+            try {
+                execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), user.getChatId());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            UUID id = UUID.fromString(split[1]);
+            payHistoryRepo.deleteById(id);
+        }
     }
 
 }

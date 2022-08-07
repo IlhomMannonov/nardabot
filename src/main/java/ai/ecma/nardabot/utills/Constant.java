@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public interface Constant {
     String URL = "https://api.telegram.org/";
 
+    String CHANEL_ID = "@paying_game";
     String TOKEN = "5302826377:AAHroBH8OFrofD7G9k6OOeqNQ7PaWLik7aE";
 
     String KEY = "--de-g--v4-ef5-v888-vd";

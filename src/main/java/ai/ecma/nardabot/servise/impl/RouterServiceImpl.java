@@ -33,30 +33,22 @@ public class RouterServiceImpl implements RouterService {
     private final BackService backService;
     private final PaymentService paymentService;
     private final Execute execute;
+    private final ChannelService channelService;
 
     public void getUpdate(Update update) {
 
-//        SendInvoice build = SendInvoice.builder()
-//                .chatId(update.getMessage().getChatId().toString())
-//                .title("hello")
-//                .description("this is description")
-//                .payload("this is payload")
-//                .providerToken("1650291590:TEST:1659719439563_CiU10zPxZCvaKh0C")
-//                .startParameter("500")
-//                .price(new LabeledPrice("So'm",545464))
-//                .currency("UZS").build();
-//        execute.sendInvoice(build);
-
-
 
         //BU METHOD TELEGRAM YUBORGAN UPDATE DAN CHAT ID NI OLIB ATRIBUTEGA JOYLAYDI
-        filter(update);
-        //logig
-        if (update.hasMessage()) {
-            backService.back(update);
-            messageRouter(update);
-        } else if (update.hasCallbackQuery()) {
-            callBackRouter(update);
+        if (filter(update)) {
+            //logig
+            if (update.hasMessage()) {
+                backService.back(update);
+                messageRouter(update);
+            } else if (update.hasCallbackQuery()) {
+                callBackRouter(update);
+            }
+        } else {
+            channelService.deleteOrder(update);
         }
     }
 
@@ -69,6 +61,11 @@ public class RouterServiceImpl implements RouterService {
                 break;
             case NARDA:
                 nardaService.choiceButtonsWithCallbackQuery(update);
+                break;
+            case HOME:
+                //  historiyni ochirish homeda bolgani uchu
+                callbackQueryService.deleteHistory(update);
+                break;
 
         }
 
@@ -107,7 +104,7 @@ public class RouterServiceImpl implements RouterService {
     }
 
 
-    void filter(Update update) {
+    private boolean filter(Update update) {
         HttpServletRequest httpServletRequest = CommonUtils.currentRequest();
         String chatId = null;
         try {
@@ -125,6 +122,7 @@ public class RouterServiceImpl implements RouterService {
         }
         //BIRINCHI KELGAN USERNI SAQLAYMIZ AGA U DATABASEDA TOPILMASA
         saveUserIfNotFound(chatId);
+        return chatId.charAt(0) != '-';
 
     }
 
@@ -132,13 +130,19 @@ public class RouterServiceImpl implements RouterService {
     private void saveUserIfNotFound(String chatId) {
         Optional<User> op = userRepo.findByChatId(chatId);
         if (op.isEmpty()) {
-            userRepo.save(User.builder()
+            User user = User.builder()
                     .role(roleRepo.getByName(RoleNames.ROLE_CUSTOMER))
                     .enable(true)
-                    .chatId(chatId)
                     .balance(new BigDecimal("0.0"))
                     .state(State.CHOICE_LANG)
-                    .build());
+                    .build();
+            user.setChatId(chatId);
+            try {
+                userRepo.save(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

@@ -6,4 +6,6 @@ public interface CallbackQueryService {
     void start(Update update);
 
     void choiceLang(Update update);
+
+    void deleteHistory(Update update);
 }

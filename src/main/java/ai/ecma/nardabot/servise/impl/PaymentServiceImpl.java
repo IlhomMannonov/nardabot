@@ -28,8 +28,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final ButtonService buttonService;
     private final Execute execute;
     private final PayTypeRepo payTypeRepo;
-    private final Timer timer;
 
+    private final ChannelService channelService;
 
     @Override
     public void deposit(Update update, User user) {
@@ -76,10 +76,8 @@ public class PaymentServiceImpl implements PaymentService {
             if (optionalPayHistory.isPresent() && optionalPayHistory.get().getStatus().name().equals(PayStatus.PENDING.name())) {
                 baseService.setState(user, State.HOME);
                 sendMessage.setReplyMarkup(buttonService.getBtn(user));
-                sendMessage.setText(langTextService.getTxt(user, "Siz <b>" + optionalPayHistory.get().getOrderCode() + "</b> raqamli tolovni amalga oshirmagansiz!\nTo'lovni 10 daqiqa ichida amalga oshiring yoki bu tolov bekor qilinadi", "You have not made a digital payment <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nMake a payment within 10 minutes or this payment will be canceled", "Вы не совершали цифровой платеж <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nПроведите платеж в течение 10 минут, иначе этот платеж будет отменен"));
+                sendMessage.setText(langTextService.getTxt(user, "Siz <b>" + optionalPayHistory.get().getOrderCode() + "</b> raqamli tolovni amalga oshirmagansiz!\nTolovni amalga oshiring yoki bekor qiling", "You have not made a digital payment <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nMake or cancel a payment", "Вы не совершали цифровой платеж <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nСовершить или отменить платеж"));
                 execute.sendMessage(sendMessage);
-                //AKS HOLDA
-
                 return;
             }
 
@@ -112,15 +110,19 @@ public class PaymentServiceImpl implements PaymentService {
                     .status(PayStatus.PENDING)
                     .user(user)
                     .build();
-            schedule(setRejectForMinute(payHistory));
 
             payHistoryRepo.save(payHistory);
 
+            baseService.setState(user, State.HOME);
+            sendMessage.setReplyMarkup(buttonService.getBtn(user));
             sendMessage.setText(langTextService.getTxt(user,
                     "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nPulni hisobingizga tushirish uchun " + Constant.USERNAME + " ga payment codeni yuboring va tolovni amalga oshiring",
                     "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nSend payment code to " + Constant.USERNAME + " and make payment",
                     "Платежное поручение успешно создано! \nКод платежа = " + payHistory.getOrderCode() + "\nОтправьте код платежа на " + Constant.USERNAME + " и произведите платеж"));
             execute.sendMessage(sendMessage);
+
+            //KANAL UCHUN HABARLAR
+            channelService.sendPayOrder(payHistory, user);
 
         }
 
@@ -156,7 +158,7 @@ public class PaymentServiceImpl implements PaymentService {
             if (to > 0) {
                 baseService.setState(user, State.HOME);
                 sendMessage.setText(langTextService.getTxt(user, "Hisobingizda chiqarish mablag yetarli emas", "You don't have enough funds to withdraw from your account", "У вас недостаточно средств для вывода средств со счета"));
-              sendMessage.setReplyMarkup(buttonService.getBtn(user));
+                sendMessage.setReplyMarkup(buttonService.getBtn(user));
                 execute.sendMessage(sendMessage);
                 return;
             }
@@ -189,18 +191,5 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    private void schedule(TimerTask task) {
-        Date current = new Date();
-        timer.schedule(task, new Date(current.getTime() + Constant.REJECT_TIME));
-    }
 
-    private TimerTask setRejectForMinute(PayHistory payHistory) {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                payHistory.setStatus(PayStatus.REJECT);
-                payHistoryRepo.save(payHistory);
-            }
-        };
-    }
 }
