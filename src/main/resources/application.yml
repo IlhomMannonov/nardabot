@@ -1,11 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/narda
-    username: postgres
-    password: root123
-#    url: jdbc:postgresql://185.217.131.182:5432/narda
-#    username: narda
-#    password: 009057246
+    #    url: jdbc:postgresql://localhost:5432/narda
+    #    username: postgres
+    #    password: root123
+    #    url: jdbc:postgresql://185.217.131.182:5432/narda
+    #    username: narda
+    #    password: 009057246#
+    url: jdbc:postgresql://cxfsaeobgnqkcp:6b0aa9da4247b2cb0f67fa36aec01cfc5924a100b4333b4ec3d63f9362d7d096@ec2-34-253-119-24.eu-west-1.compute.amazonaws.com:5432/d6qqob1g7idk34
+    username: cxfsaeobgnqkcp
+    password: 6b0aa9da4247b2cb0f67fa36aec01cfc5924a100b4333b4ec3d63f9362d7d09
   main:
     allow-circular-references: on
   jpa:
