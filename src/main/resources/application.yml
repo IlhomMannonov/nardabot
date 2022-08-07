@@ -3,7 +3,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/narda
     username: postgres
     password: root123
-#    url: jdbc:postgresql://185.217.131.69:5432/narda
+#    url: jdbc:postgresql://185.217.131.182:5432/narda
 #    username: narda
 #    password: 009057246
   main:

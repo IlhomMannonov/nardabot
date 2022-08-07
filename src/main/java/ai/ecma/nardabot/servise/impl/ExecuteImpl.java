@@ -24,7 +24,13 @@ public class ExecuteImpl implements Execute {
 
     @Override
     public RestTelegram sendMessage(SendMessage sendMessage) {
-        return feign.sendMessage(BOT, sendMessage);
+        RestTelegram restTelegram = new RestTelegram(false, null);
+        try {
+            return feign.sendMessage(BOT, sendMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RestTelegram(false, null);
+        }
     }
 
     @Override
@@ -39,7 +45,12 @@ public class ExecuteImpl implements Execute {
 
     @Override
     public void editMessageCaption(EditMessageCaption editMessageCaption) {
-        feign.editMessageCaption(BOT, editMessageCaption);
+        try {
+            feign.editMessageCaption(BOT, editMessageCaption);
+        } catch (Exception ignore) {
+
+        }
+
     }
 
     @Override

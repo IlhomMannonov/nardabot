@@ -39,17 +39,20 @@ public class RouterServiceImpl implements RouterService {
 
 
         //BU METHOD TELEGRAM YUBORGAN UPDATE DAN CHAT ID NI OLIB ATRIBUTEGA JOYLAYDI
-        if (filter(update)) {
-            //logig
-            if (update.hasMessage()) {
+        //logig
+        if (update.hasMessage()) {
+            if (filter(update)) {
                 backService.back(update);
                 messageRouter(update);
-            } else if (update.hasCallbackQuery()) {
-                callBackRouter(update);
             }
-        } else {
-            channelService.deleteOrder(update);
+        } else if (update.hasCallbackQuery()) {
+            if (filter(update))
+                callBackRouter(update);
+
         }
+        channelService.deleteOrder(update);
+
+
     }
 
     private void callBackRouter(Update update) {
@@ -63,7 +66,7 @@ public class RouterServiceImpl implements RouterService {
                 nardaService.choiceButtonsWithCallbackQuery(update);
                 break;
             case HOME:
-                //  historiyni ochirish homeda bolgani uchu
+                //  historiyni ochirish homeda bolgani uchun
                 callbackQueryService.deleteHistory(update);
                 break;
 
@@ -116,18 +119,18 @@ public class RouterServiceImpl implements RouterService {
         } catch (RuntimeException ignored) {
         }
         httpServletRequest.setAttribute(Constant.KEY, chatId);
-        if (chatId == null) {
-            SendMessage sendMessage = new SendMessage(String.valueOf(1610694057), "wait...");
-            execute.sendMessage(sendMessage);
-        }
+//        if (chatId == null) {
+//            SendMessage sendMessage = new SendMessage(String.valueOf(1610694057), "wait...");
+//            execute.sendMessage(sendMessage);
+//        }
         //BIRINCHI KELGAN USERNI SAQLAYMIZ AGA U DATABASEDA TOPILMASA
-        saveUserIfNotFound(chatId);
-        return chatId.charAt(0) != '-';
+        return saveUserIfNotFound(chatId);
+
 
     }
 
 
-    private void saveUserIfNotFound(String chatId) {
+    private boolean saveUserIfNotFound(String chatId) {
         Optional<User> op = userRepo.findByChatId(chatId);
         if (op.isEmpty()) {
             User user = User.builder()
@@ -139,10 +142,18 @@ public class RouterServiceImpl implements RouterService {
             user.setChatId(chatId);
             try {
                 userRepo.save(user);
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
 
         }
+        return true;
     }
+
+    private boolean channelOrBot(Update update) {
+        return (update.hasCallbackQuery() && !update.getCallbackQuery().getData().startsWith("channel"));
+    }
+
 }

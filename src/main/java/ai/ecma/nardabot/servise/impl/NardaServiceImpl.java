@@ -50,7 +50,7 @@ public class NardaServiceImpl implements NardaService {
         SendPhoto sendPhoto = SendPhoto.builder()
                 .photo("AgACAgIAAxkBAAIJhmJxQH1IYJTRPj4t6pA-HIMnno3bAALZuzEb7beISx0lVE7RxpMAAQEAAwIAA3kAAyQE")
                 .caption(langTextService.text(user))
-                .replyMarkup(buttonService.getInlineBtn(user,""))
+                .replyMarkup(buttonService.getInlineBtn(user, ""))
                 .chatId(user.getChatId())
                 .build();
         execute.sendPhoto(sendPhoto);
@@ -74,17 +74,15 @@ public class NardaServiceImpl implements NardaService {
         if (data.length >= 2) {
             if (Objects.equals(data[1], "edit")) {
                 //BU METHOD SUMMANI KOPAYTIRISH YOKI KAMAYTIRISH UCHUN ISHLATILADI
-                boolean isUpdate = editAction(data[2], narda);
+                editAction(data[2], narda);
                 nardaRepo.save(narda);
-                if (isUpdate)
-                    editMessage(update, user);
+                editMessage(update, user);
 
             } else if (Objects.equals(data[1], "game")) {
                 //BU METHOD OYIN STATUSINI TANLASH UCHUN: OVWER, LOVER, MIDDLE
                 boolean isUpdate = editStatus(data[2], narda);
                 nardaRepo.save(narda);
-                if (isUpdate)
-                    editMessage(update, user);
+                editMessage(update, user);
 
             } else if (Objects.equals(data[1], "start")) {
                 startGame(update);
@@ -169,7 +167,7 @@ public class NardaServiceImpl implements NardaService {
     private void editMessage(Update update, User user) {
         EditMessageCaption editMessageCaption = EditMessageCaption.builder()
                 .caption(langTextService.text(user))
-                .replyMarkup(buttonService.getInlineBtn(user,""))
+                .replyMarkup(buttonService.getInlineBtn(user, ""))
                 .chatId(user.getChatId())
                 .messageId(update.getCallbackQuery().getMessage().getMessageId())
                 .build();

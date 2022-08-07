@@ -168,7 +168,7 @@ public class PaymentServiceImpl implements PaymentService {
                 execute.sendMessage(sendMessage);
                 return;
             }
-
+            baseService.setState(user, State.HOME);
             PayHistory payHistory = PayHistory.builder()
                     .action(PayStatus.OUT)
                     .amount(amount)
@@ -184,8 +184,8 @@ public class PaymentServiceImpl implements PaymentService {
                     "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nPulni Chiqarib olish uchun " + Constant.USERNAME + " ga payment codeni yuboring",
                     "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nSend payment code to " + Constant.USERNAME + " to Withdraw money",
                     "Платежное поручение успешно создано! \nКод платежа = " + payHistory.getOrderCode() + "\nОтправьте код платежа на " + Constant.USERNAME + ", чтобы снять деньги"));
+           sendMessage.setReplyMarkup(buttonService.getBtn(user));
             execute.sendMessage(sendMessage);
-            baseService.setState(user, State.HOME);
 
 
         }
