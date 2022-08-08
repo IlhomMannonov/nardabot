@@ -168,6 +168,7 @@ public class PaymentServiceImpl implements PaymentService {
                 execute.sendMessage(sendMessage);
                 return;
             }
+
             baseService.setState(user, State.HOME);
             PayHistory payHistory = PayHistory.builder()
                     .action(PayStatus.OUT)

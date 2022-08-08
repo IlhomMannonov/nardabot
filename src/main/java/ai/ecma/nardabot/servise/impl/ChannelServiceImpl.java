@@ -56,7 +56,8 @@ public class ChannelServiceImpl implements ChannelService {
             if (Objects.equals(split[0], "channel")) {
                 UUID id = UUID.fromString(split[2]);
                 Optional<PayHistory> optional = payHistoryRepo.findById(id);
-                if (optional.isPresent()) {
+
+                if (optional.isPresent() && optional.get().isActive()) {
                     PayHistory payHistory = optional.get();
                     switch (split[1]) {
                         case "payed":
@@ -69,6 +70,7 @@ public class ChannelServiceImpl implements ChannelService {
                             payHistory.setStatus(PayStatus.REJECT);
                             break;
                     }
+                    payHistory.setActive(false);
                     payHistoryRepo.save(payHistory);
                 }
                 execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), Constant.CHANEL_ID);
