@@ -66,7 +66,6 @@ public class HomeServiceImpl implements HomeService {
     private void profile(Update update, User user) {
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
         SendMessage sendMessage = SendMessage.builder()
-
                 .text(langTextService.getTxt(user,
                         "Ism: " + user.getName() + "\nTelefon: " + user.getPhone() + "\nHisob: " + numberFormat.format(user.getBalance()),
                         "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: " + numberFormat.format(user.getBalance()),
