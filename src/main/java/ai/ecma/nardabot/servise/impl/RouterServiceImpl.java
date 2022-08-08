@@ -34,6 +34,7 @@ public class RouterServiceImpl implements RouterService {
     private final PaymentService paymentService;
     private final Execute execute;
     private final ChannelService channelService;
+    private final SettingsService settingsService;
 
     public void getUpdate(Update update) {
 
@@ -103,6 +104,10 @@ public class RouterServiceImpl implements RouterService {
                 break;
             case WITHDRAW:
                 paymentService.enterWithdrawSum(update);
+                break;
+            case SETTINGS:
+                settingsService.setting(update);
+
         }
     }
 

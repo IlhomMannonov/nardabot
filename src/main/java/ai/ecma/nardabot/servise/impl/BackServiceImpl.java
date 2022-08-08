@@ -33,6 +33,7 @@ public class BackServiceImpl implements BackService {
                         break;
                     case GAMES:
                     case PAYMENT_ENTER_SUM:
+                    case SETTINGS:
                     case WITHDRAW:
                         baseService.setState(user, State.HOME);
                         authService.getHome(update);

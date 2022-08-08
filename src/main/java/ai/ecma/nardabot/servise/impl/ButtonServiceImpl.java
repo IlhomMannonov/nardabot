@@ -97,6 +97,7 @@ public class ButtonServiceImpl implements ButtonService {
                 String[] row = homeButtons.split("\n");
                 String[] row2 = row[1].split(",");
                 String[] row3 = row[2].split(",");
+                String[] row4 = row[3].split(",");
                 return btn.markupReplay(
                         btn.rowList(
                                 btn.row(
@@ -104,7 +105,10 @@ public class ButtonServiceImpl implements ButtonService {
                                 btn.row(
                                         btn.button(row2[0], false, false), btn.button(row2[1], false, false)),
                                 btn.row(
-                                        btn.button(row3[0], false, false), btn.button(row3[1], false, false))
+                                        btn.button(row3[0], false, false), btn.button(row3[1], false, false)),
+                                btn.row(
+                                        btn.button(row4[0], false, false)
+                                )
                         )
 
                 );
@@ -122,6 +126,17 @@ public class ButtonServiceImpl implements ButtonService {
                 return btn.markupReplay(
                         btn.rowList(
                                 btn.row(btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false))
+                        )
+                );
+            case SETTINGS:
+                return btn.markupReplay(
+                        btn.rowList(
+                                btn.row(
+                                        btn.button(langTextService.getTxt(user, "Mening Kartam", "My Card", "Моя карточка"), false, false),
+                                        btn.button(langTextService.getTxt(user, "Karta qo'shish", "Add Card", "Добавить карту"), false, false)
+                                ),
+                                btn.row(btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false))
+
                         )
                 );
 

@@ -15,5 +15,5 @@ public enum State {
     PROFILE,
 
     WITHDRAW,
-    HISTORY, PAYMENT_ENTER_SUM
+    HISTORY, SETTINGS, PAYMENT_ENTER_SUM
     }

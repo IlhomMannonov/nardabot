@@ -40,6 +40,9 @@ public class PayHistory extends AbsUUID {
     @Enumerated(EnumType.STRING)
     private PayStatus action;
 
+    @ManyToOne
+    private Card card;
+
     @Column(name = "code")
     private String orderCode;
 

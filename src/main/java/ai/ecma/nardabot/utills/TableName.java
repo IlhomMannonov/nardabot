@@ -8,4 +8,5 @@ public interface TableName {
     String PAY_TYPE = "pay_type";
     String NARDA = "narda";
     String ATTACHMENT = "attachment";
+    String CARD = "card";
 }

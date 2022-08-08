@@ -5,6 +5,7 @@ import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.PayStatus;
 import ai.ecma.nardabot.enums.PayTypes;
 import ai.ecma.nardabot.enums.State;
+import ai.ecma.nardabot.repository.CardRepo;
 import ai.ecma.nardabot.repository.PayHistoryRepo;
 import ai.ecma.nardabot.repository.PayTypeRepo;
 import ai.ecma.nardabot.servise.abs.*;
@@ -28,6 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final ButtonService buttonService;
     private final Execute execute;
     private final PayTypeRepo payTypeRepo;
+    private final CardRepo cardRepo;
 
     private final ChannelService channelService;
 
@@ -51,10 +53,17 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
 
     public void withdraw(Update update, User user) {
-
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(user.getChatId());
+        if (!cardRepo.existsByUserId(user.getId())) {
+            baseService.setState(user, State.HOME);
+            sendMessage.setText(langTextService.getTxt(user, "Sizda Karta mavjud emas, kartangizni sozlamalar bo'limidan qo'shasiz", "You do not have a Card, add your card from the settings section", "У вас нет Карты, добавьте свою карту из раздела настроек"));
+            sendMessage.setReplyMarkup(buttonService.getBtn(user));
+            execute.sendMessage(sendMessage);
+            return;
+        }
         baseService.setState(user, State.WITHDRAW);
-
-        SendMessage sendMessage = SendMessage.builder()
+        sendMessage = SendMessage.builder()
                 .text(langTextService.getTxt(user, "Chiqarmoqchi bo'lgan pul miqdorini yozing", "Enter the amount you want to withdraw", "Введите сумму, которую хотите вывести"))
                 .chatId(user.getChatId())
                 .replyMarkup(buttonService.getBtn(user))
@@ -133,15 +142,9 @@ public class PaymentServiceImpl implements PaymentService {
         User user = CommonUtils.getUser();
         if (update.getMessage().hasText()) {
             SendMessage sendMessage = new SendMessage();
-            sendMessage.enableHtml(true);
             sendMessage.setChatId(user.getChatId());
-//            Optional<PayHistory> optionalPayHistory = payHistoryRepo.findFirstByUserIdAndActionOrderByCreatedAtDesc(user.getId(), PayStatus.OUT);
-//            if (optionalPayHistory.isPresent()) {
-//                sendMessage.setText(langTextService.getTxt(user, "Siz <b>" + optionalPayHistory.get().getOrderCode() + "</b> raqamli tolovni amalga oshirmagansiz!\nTo'lovni 10 daqiqa ichida amalga oshiring yoki bu tolov bekor qilinadi", "You have not made a digital payment <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nMake a payment within 10 minutes or this payment will be canceled", "Вы не совершали цифровой платеж <b>" + optionalPayHistory.get().getOrderCode() + "</b>!\nПроведите платеж в течение 10 минут, иначе этот платеж будет отменен"));
-//                execute.sendMessage(sendMessage);
-//                baseService.setState(user, State.HOME);
-//                return;
-//            }
+            sendMessage.enableHtml(true);
+
             String text = update.getMessage().getText();
             BigDecimal amount = null;
             try {
@@ -185,7 +188,7 @@ public class PaymentServiceImpl implements PaymentService {
                     "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nPulni Chiqarib olish uchun " + Constant.USERNAME + " ga payment codeni yuboring",
                     "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nSend payment code to " + Constant.USERNAME + " to Withdraw money",
                     "Платежное поручение успешно создано! \nКод платежа = " + payHistory.getOrderCode() + "\nОтправьте код платежа на " + Constant.USERNAME + ", чтобы снять деньги"));
-           sendMessage.setReplyMarkup(buttonService.getBtn(user));
+            sendMessage.setReplyMarkup(buttonService.getBtn(user));
             execute.sendMessage(sendMessage);
 
 

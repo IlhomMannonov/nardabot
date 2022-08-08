@@ -39,6 +39,7 @@ public class HomeServiceImpl implements HomeService {
         String payHistory = langTextService.getTxt(user, "To'lovlar tarixi", "Payment History", "История платежей");
         String deposit = langTextService.getTxt(user, "Pul Solish", "Deposit", "Депозит");
         String withdraw = langTextService.getTxt(user, "Pul chiqarish", "Withdraw", "вывод");
+        String settings = langTextService.getTxt(user, "Sozlamalar", "Settings", "Настройки");
 
         if (Objects.equals(text, games))
             games(user);
@@ -50,6 +51,18 @@ public class HomeServiceImpl implements HomeService {
             deposit(update, user);
         else if (Objects.equals(text, withdraw))
             withdraw(update, user);
+        else if (Objects.equals(text, settings))
+            settings(update, user);
+    }
+
+    private void settings(Update update, User user) {
+        baseService.setState(user, State.SETTINGS);
+        SendMessage sendMessage = SendMessage.builder()
+                .text(langTextService.getTxt(user, "Sozlamalar bo'limi", "Settings panel", "Настройки"))
+                .chatId(user.getChatId())
+                .replyMarkup(buttonService.getBtn(user))
+                .build();
+        execute.sendMessage(sendMessage);
     }
 
     public void games(User user) {
