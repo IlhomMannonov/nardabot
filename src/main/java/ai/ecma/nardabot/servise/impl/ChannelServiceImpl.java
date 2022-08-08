@@ -73,8 +73,8 @@ public class ChannelServiceImpl implements ChannelService {
                     payHistory.setActive(false);
                     payHistoryRepo.save(payHistory);
                 }
-//                execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), Constant.CHANEL_ID);
 
+                execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), Constant.CHANEL_ID);
 
             }
         }
