@@ -64,11 +64,13 @@ public class HomeServiceImpl implements HomeService {
 
 
     private void profile(Update update, User user) {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
         SendMessage sendMessage = SendMessage.builder()
+
                 .text(langTextService.getTxt(user,
-                        "Ism: " + user.getName() + "\nTelefon: " + user.getPhone() + "\nHisob: " + user.getBalance(),
-                        "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: " + user.getBalance(),
-                        "Имя:" + user.getName() + "\nТелефон:" + user.getPhone() + "\nБаланс:" + user.getBalance()))
+                        "Ism: " + user.getName() + "\nTelefon: " + user.getPhone() + "\nHisob: " + numberFormat.format(user.getBalance()),
+                        "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: " + numberFormat.format(user.getBalance()),
+                        "Имя:" + user.getName() + "\nТелефон:" + user.getPhone() + "\nБаланс:" + numberFormat.format(user.getBalance())))
                 .chatId(user.getChatId())
                 .build();
         execute.sendMessage(sendMessage);
