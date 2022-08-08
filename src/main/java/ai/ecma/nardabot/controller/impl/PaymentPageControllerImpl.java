@@ -21,6 +21,6 @@ public class PaymentPageControllerImpl  implements PaymentPageController {
 
     @Override
     public String warning() {
-        return null;
+        return "warning";
     }
 }
