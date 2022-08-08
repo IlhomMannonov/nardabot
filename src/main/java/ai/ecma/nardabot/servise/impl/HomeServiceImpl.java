@@ -67,9 +67,9 @@ public class HomeServiceImpl implements HomeService {
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
         SendMessage sendMessage = SendMessage.builder()
                 .text(langTextService.getTxt(user,
-                        "Ism: " + user.getName() + "\nTelefon: " + user.getPhone() + "\nHisob: <b>" + numberFormat.format(user.getBalance() + " So'm</b>"),
-                        "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: <b>" + numberFormat.format(user.getBalance() + " So'm</b>"),
-                        "Имя:" + user.getName() + "\nТелефон:" + user.getPhone() + "\nБаланс: <b>" + numberFormat.format(user.getBalance() + " So'm </b>")))
+                        "Ism: " + user.getName() + "\nTelefon: " + user.getPhone() + "\nHisob: <b>" + numberFormat.format(user.getBalance()) + " So'm</b>",
+                        "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: <b>" + numberFormat.format(user.getBalance()) + " So'm</b>",
+                        "Имя:" + user.getName() + "\nТелефон:" + user.getPhone() + "\nБаланс: <b>" + numberFormat.format(user.getBalance()) + " So'm </b>"))
                 .chatId(user.getChatId())
                 .build();
         sendMessage.enableHtml(true);
