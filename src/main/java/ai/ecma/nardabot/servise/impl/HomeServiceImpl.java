@@ -55,7 +55,8 @@ public class HomeServiceImpl implements HomeService {
             settings(update, user);
     }
 
-    private void settings(Update update, User user) {
+    @Override
+    public void settings(Update update, User user) {
         baseService.setState(user, State.SETTINGS);
         SendMessage sendMessage = SendMessage.builder()
                 .text(langTextService.getTxt(user, "Sozlamalar bo'limi", "Settings panel", "Настройки"))

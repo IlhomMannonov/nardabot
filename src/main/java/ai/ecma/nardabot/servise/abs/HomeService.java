@@ -6,5 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public interface HomeService {
     void home(Update update);
 
-   void games(User user);
+    void games(User user);
+
+    void settings(Update update, User user);
 }

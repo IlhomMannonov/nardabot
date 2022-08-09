@@ -9,4 +9,6 @@ public interface SettingsService {
     void addCard(Update update);
 
     void setting(Update update);
+
+    void editCard(Update update);
 }

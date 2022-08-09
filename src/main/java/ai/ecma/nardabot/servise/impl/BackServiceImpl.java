@@ -19,6 +19,7 @@ public class BackServiceImpl implements BackService {
 
     private final AuthService authService;
     private final HomeService homeService;
+    private final SettingsService settingsService;
 
     @Override
     public void back(Update update) {
@@ -38,8 +39,9 @@ public class BackServiceImpl implements BackService {
                         baseService.setState(user, State.HOME);
                         authService.getHome(update);
                         break;
-
-
+                    case ADD_CARD:
+                        baseService.setState(user, State.SETTINGS);
+                        homeService.settings(update,user);
                 }
             }
         }

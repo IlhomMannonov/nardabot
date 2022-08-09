@@ -10,10 +10,13 @@ import ai.ecma.nardabot.servise.abs.Btn;
 import ai.ecma.nardabot.servise.abs.ButtonService;
 import ai.ecma.nardabot.servise.abs.LangTextService;
 import ai.ecma.nardabot.utills.Constant;
+import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +77,17 @@ public class ButtonServiceImpl implements ButtonService {
                         btn.button(langTextService.getTxt(user, "\uD83D\uDDD1 O'chirish", "\uD83D\uDDD1 Delete", "\uD83D\uDDD1 Удалить"), id)
                 ));
                 break;
+            case SETTINGS:
+                if (Objects.equals(id, "add")) {
+                    markup = btn.markup(btn.row(
+                            btn.button(langTextService.getTxt(user, "Karta qoshish", "Add card", "Добавить карту"), "addCard")
+                    ));
+                } else if (Objects.equals(id, "edit")) {
+                    markup = btn.markup(btn.row(
+                            btn.button(langTextService.getTxt(user, "Kartani taxrirlash", "Edit card", "Изменить карту"), "editCard")
+                    ));
+                }
+                break;
         }
 
         return markup;
@@ -121,6 +135,7 @@ public class ButtonServiceImpl implements ButtonService {
                         )
                 );
 
+            case ADD_CARD:
             case WITHDRAW:
             case PAYMENT_ENTER_SUM:
                 return btn.markupReplay(

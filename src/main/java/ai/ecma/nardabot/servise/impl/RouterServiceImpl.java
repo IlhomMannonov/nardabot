@@ -70,6 +70,11 @@ public class RouterServiceImpl implements RouterService {
                 //  historiyni ochirish homeda bolgani uchun
                 callbackQueryService.deleteHistory(update);
                 break;
+            case SETTINGS:
+                if (Objects.equals("addCard", update.getCallbackQuery().getData()))
+                    settingsService.addCard(update);
+                if (Objects.equals("editCard", update.getCallbackQuery().getData()))
+                    settingsService.editCard(update);
 
         }
 
@@ -107,6 +112,10 @@ public class RouterServiceImpl implements RouterService {
                 break;
             case SETTINGS:
                 settingsService.setting(update);
+                break;
+            case ADD_CARD:
+                settingsService.addCard(update);
+                break;
 
         }
     }
