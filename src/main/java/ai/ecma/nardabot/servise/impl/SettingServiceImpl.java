@@ -51,7 +51,7 @@ public class SettingServiceImpl implements SettingsService {
         if (update.hasMessage()) {
 
             SendMessage sendMessage = new SendMessage();
-            boolean b = validCard(update, user);
+            boolean b = validCard(update, user, true);
             String text = update.getMessage().getText();
             if (b) {
                 Card card = Card.builder()
@@ -77,18 +77,16 @@ public class SettingServiceImpl implements SettingsService {
             SendMessage build = SendMessage.builder()
                     .replyMarkup(buttonService.getBtn(user))
                     .chatId(user.getChatId())
-                    .text(langTextService.getTxt(user,
-                            "Tolovlarni kartanigizga tushirib olish uchun karta qoshishingiz kerak kartnigizni 16 talik raqalarini kiriting",
-                            "You need to add a card to download payments to your card. Enter your 16-digit card number.",
-                            "Вам нужно добавить карту, чтобы загружать платежи на вашу карту. Введите 16-значный номер карты.")).build();
+                    .text(langTextService.text(user)).build();
             execute.sendMessage(build);
         }
     }
 
-    private boolean validCard(Update update, User user) {
+    private boolean validCard(Update update, User user, boolean isEdit) {
         SendMessage sendMessage = new SendMessage();
 
         String text = update.getMessage().getText();
+        text = text.replace(" ", "");
         String regex = "^(8600|9860)[0-9]{12}";
         Pattern pattern = Pattern.compile(regex);
 
@@ -100,7 +98,7 @@ public class SettingServiceImpl implements SettingsService {
             execute.sendMessage(sendMessage);
             return false;
         } else {
-            if (cardRepo.existsByUserId(user.getId())) {
+            if (cardRepo.existsByUserId(user.getId()) && isEdit) {
                 sendMessage = SendMessage.builder()
                         .text(langTextService.getTxt(user, "Sizda Karta mavjud", "You have a Card", "У вас есть карта"))
                         .chatId(user.getChatId())
@@ -108,7 +106,8 @@ public class SettingServiceImpl implements SettingsService {
                 execute.sendMessage(sendMessage);
                 return false;
 
-            } else if (cardRepo.existsByNumber(text)) {
+            }
+            if (cardRepo.existsByNumber(text)) {
                 sendMessage = SendMessage.builder()
                         .text(langTextService.getTxt(user, "Bu karta raqam boshqa user tomonidan qo'shilgan", "This card number was added by another user", "Этот номер карты был добавлен другим пользователем"))
                         .chatId(user.getChatId())
@@ -127,11 +126,8 @@ public class SettingServiceImpl implements SettingsService {
             User user = CommonUtils.getUser();
             String text = update.getMessage().getText();
             String see = langTextService.getTxt(user, "Mening Kartam", "My Card", "Моя карточка");
-            String add = langTextService.getTxt(user, "Karta qo'shish", "Add Card", "Добавить карту");
             if (Objects.equals(text, see)) {
                 myCard(update);
-            } else if (Objects.equals(text, add)) {
-                addCard(update);
             }
         }
     }
@@ -140,20 +136,29 @@ public class SettingServiceImpl implements SettingsService {
     public void editCard(Update update) {
         User user = CommonUtils.getUser();
         baseService.setState(user, State.EDIT_CARD);
-        execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), user.getChatId());
-        boolean b = validCard(update, user);
-        if (b) {
-
-            SendMessage build = SendMessage.builder()
-                    .text(langTextService.getTxt(user, "Karta muvoffaqiyatli o'zgartirildi", "Card changed successfully", "Карта успешно изменена"))
-                    .replyMarkup(buttonService.getBtn(user))
+        if (update.hasCallbackQuery()) {
+            execute.deleteMessage(update.getCallbackQuery().getMessage().getMessageId(), user.getChatId());
+            SendMessage sendMessage = SendMessage.builder()
                     .chatId(user.getChatId())
+                    .text(langTextService.text(user))
+                    .replyMarkup(buttonService.getBtn(user))
                     .build();
+            execute.sendMessage(sendMessage);
+        } else {
+            boolean b = validCard(update, user, false);
+            if (b) {
+                baseService.setState(user, State.SETTINGS);
+                SendMessage build = SendMessage.builder()
+                        .text(langTextService.getTxt(user, "Karta muvoffaqiyatli o'zgartirildi", "Card changed successfully", "Карта успешно изменена"))
+                        .replyMarkup(buttonService.getBtn(user))
+                        .chatId(user.getChatId())
+                        .build();
 
-            Card card = cardRepo.getByUserId(user.getId());
-            card.setNumber(update.getMessage().getText());
-            execute.sendMessage(build);
-
+                Card card = cardRepo.getByUserId(user.getId());
+                card.setNumber(update.getMessage().getText());
+                cardRepo.save(card);
+                execute.sendMessage(build);
+            }
         }
     }
 }

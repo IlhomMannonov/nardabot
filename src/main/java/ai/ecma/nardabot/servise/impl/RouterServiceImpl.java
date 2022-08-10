@@ -1,6 +1,7 @@
 package ai.ecma.nardabot.servise.impl;
 
 import ai.ecma.nardabot.entity.User;
+import ai.ecma.nardabot.enums.Lang;
 import ai.ecma.nardabot.enums.RoleNames;
 import ai.ecma.nardabot.enums.State;
 import ai.ecma.nardabot.repository.RoleRepo;
@@ -43,6 +44,7 @@ public class RouterServiceImpl implements RouterService {
         //logig
         if (update.hasMessage()) {
             if (filter(update)) {
+                lang(update);
                 backService.back(update);
                 messageRouter(update);
             }
@@ -54,6 +56,23 @@ public class RouterServiceImpl implements RouterService {
         channelService.deleteOrder(update);
 
 
+    }
+
+    private void lang(Update update) {
+        if (update.getMessage().hasText()) {
+            User user = CommonUtils.getUser();
+            switch (update.getMessage().getText()) {
+                case "/languz":
+                    user.setLanguage(Lang.UZ);
+                    break;
+                case "langen":
+                    user.setLanguage(Lang.EN);
+                    break;
+                case "langru":
+                    user.setLanguage(Lang.RU);
+                    break;
+            }
+        }
     }
 
     private void callBackRouter(Update update) {
@@ -115,6 +134,9 @@ public class RouterServiceImpl implements RouterService {
                 break;
             case ADD_CARD:
                 settingsService.addCard(update);
+                break;
+            case EDIT_CARD:
+                settingsService.editCard(update);
                 break;
 
         }

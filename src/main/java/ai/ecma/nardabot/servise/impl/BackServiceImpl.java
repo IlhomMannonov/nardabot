@@ -39,9 +39,10 @@ public class BackServiceImpl implements BackService {
                         baseService.setState(user, State.HOME);
                         authService.getHome(update);
                         break;
+                    case EDIT_CARD:
                     case ADD_CARD:
                         baseService.setState(user, State.SETTINGS);
-                        homeService.settings(update,user);
+                        homeService.settings(update, user);
                 }
             }
         }

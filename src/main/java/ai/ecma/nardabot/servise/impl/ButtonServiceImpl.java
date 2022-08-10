@@ -135,6 +135,7 @@ public class ButtonServiceImpl implements ButtonService {
                         )
                 );
 
+            case EDIT_CARD:
             case ADD_CARD:
             case WITHDRAW:
             case PAYMENT_ENTER_SUM:
@@ -147,8 +148,8 @@ public class ButtonServiceImpl implements ButtonService {
                 return btn.markupReplay(
                         btn.rowList(
                                 btn.row(
-                                        btn.button(langTextService.getTxt(user, "Mening Kartam", "My Card", "Моя карточка"), false, false),
-                                        btn.button(langTextService.getTxt(user, "Karta qo'shish", "Add Card", "Добавить карту"), false, false)
+                                        btn.button(langTextService.getTxt(user, "Mening Kartam", "My Card", "Моя карточка"), false, false)
+                                      //  btn.button(langTextService.getTxt(user, "Karta qo'shish", "Add Card", "Добавить карту"), false, false)
                                 ),
                                 btn.row(btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false))
 
