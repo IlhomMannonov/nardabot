@@ -21,7 +21,12 @@ public interface PayHistoryRepo extends JpaRepository<PayHistory, UUID> {
 
     Optional<PayHistory> findFirstByUserIdAndActionOrderByCreatedAtDesc(UUID user_id, PayStatus action);
 
-    List<PayHistory> findAllByActionAndStatusOrderByCreatedAtDesc(PayStatus action, PayStatus status);
+    @Query(value = "select *\n" +
+            "from pay_history p\n" +
+            "where p.action = :action :: varchar\n" +
+            "  and p.status = :status :: varchar\n" +
+            "order by created_at desc", nativeQuery = true)
+    List<PayHistory> findAllByActionAndStatusOrderByCreatedAtDescc(PayStatus action, PayStatus status);
 
 
     @Query(value = "select * from pay_history p where p.user_id = :user_id order by created_at desc limit 1", nativeQuery = true)
