@@ -15,10 +15,10 @@ public interface PaymentPageController {
     String SUCCESS = "/success";
     String REJECT = "/reject";
     String WARNING = "/warning";
-    String APPROVE_PAGE = "/approve-page";
+    String APPROVE_PAGE = "/approvePage";
     String ACCEPT_PAYMENT = "/accept-payment";
     String REJECT_PAYMENT = "/reject-payment";
-    String PAYED_PAGE = "/payed-page";
+    String PAYED_PAGE = "/payedPage";
 
     @GetMapping(SUCCESS)
     String successPayment();
