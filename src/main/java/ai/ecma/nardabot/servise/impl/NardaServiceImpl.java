@@ -211,8 +211,9 @@ public class NardaServiceImpl implements NardaService {
             }
             user.setBalance(user.getBalance().subtract(narda.getAmount()));
         }
-        userRepo.save(user);
+        user.setGamed(true);
 
+        userRepo.save(user);
         AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
                 .text(isUpdate ? nardaState.getView() + "\n" + text + "\nscore: " + nardaState.getScore() : text)
                 .showAlert(true)

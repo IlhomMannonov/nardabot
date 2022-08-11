@@ -11,9 +11,15 @@ import java.util.UUID;
 
 public interface PayHistoryRepo extends JpaRepository<PayHistory, UUID> {
     Optional<PayHistory> findByUserId(UUID user_id);
+
     Boolean existsByUserId(UUID user_id);
 
-    @Query(value = "select * from pay_history p where deleted=false and user_id = :user_id order by created_at desc limit 10", nativeQuery = true)
+    @Query(value = "with t as (select *\n" +
+            "                       from pay_history p\n" +
+            "                       where deleted = false\n" +
+            "                         and user_id = :user_id\n" +
+            "                         and active is true\n" +
+            "                       limit 10) select * from t order by code ", nativeQuery = true)
     List<PayHistory> findAllByUserId(UUID user_id);
 
     @Query(value = "select code from pay_history p order by code desc limit 1", nativeQuery = true)
@@ -23,10 +29,12 @@ public interface PayHistoryRepo extends JpaRepository<PayHistory, UUID> {
 
     @Query(value = "select *\n" +
             "from pay_history p\n" +
-            "where p.action = :action :: varchar\n" +
-            "  and p.status = :status :: varchar\n" +
+            "where p.action = :action\n" +
+            "  and p.status = :status\n" +
+            "  and case\n" +
+            "          when :i is true then deleted = false else true end\n" +
             "order by created_at desc", nativeQuery = true)
-    List<PayHistory> findAllByActionAndStatusOrderByCreatedAtDescc(PayStatus action, PayStatus status);
+    List<PayHistory> findAllByActionAndStatusOrderByCreatedAtDesc(String action, String status, boolean i);
 
 
     @Query(value = "select * from pay_history p where p.user_id = :user_id order by created_at desc limit 1", nativeQuery = true)

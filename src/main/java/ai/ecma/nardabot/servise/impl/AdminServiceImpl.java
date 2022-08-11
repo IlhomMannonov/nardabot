@@ -1,6 +1,7 @@
 package ai.ecma.nardabot.servise.impl;
 
 import ai.ecma.nardabot.entity.PayHistory;
+import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.PayStatus;
 import ai.ecma.nardabot.payload.PayDTO;
 import ai.ecma.nardabot.repository.PayHistoryRepo;
@@ -22,7 +23,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String getPaymentPage(Model model) {
-        List<PayDTO> collect = payHistoryRepo.findAllByActionAndStatusOrderByCreatedAtDescc(PayStatus.OUT, PayStatus.PENDING).stream()
+        List<PayDTO> collect = payHistoryRepo.findAllByActionAndStatusOrderByCreatedAtDesc(PayStatus.OUT.name(), PayStatus.PENDING.name(), true).stream()
                 .map(this::toPayDTO)
                 .collect(Collectors.toList());
         model.addAttribute("data", collect);
@@ -33,6 +34,9 @@ public class AdminServiceImpl implements AdminService {
     public String acceptPayment(Model model, UUID id) {
         payHistoryRepo.findById(id).ifPresent(i -> {
             i.setStatus(PayStatus.PAYED);
+            User user = i.getUser();
+            user.setGamed(false);
+            userRepo.save(user);
             payHistoryRepo.save(i);
         });
         return getPaymentPage(model);
@@ -42,6 +46,9 @@ public class AdminServiceImpl implements AdminService {
     public String rejectPayment(Model model, UUID id) {
         payHistoryRepo.findById(id).ifPresent(i -> {
             i.setStatus(PayStatus.REJECT);
+            User user = i.getUser();
+            user.setBalance(user.getBalance().add(i.getAmount()));
+            userRepo.save(user);
             payHistoryRepo.save(i);
         });
         return getPaymentPage(model);
@@ -49,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String payedPage(Model model) {
-        List<PayDTO> collect = payHistoryRepo.findAllByActionAndStatusOrderByCreatedAtDescc(PayStatus.OUT, PayStatus.PAYED).stream()
+        List<PayDTO> collect = payHistoryRepo.findAllByActionAndStatusOrderByCreatedAtDesc(PayStatus.OUT.name(), PayStatus.PAYED.name(), false).stream()
                 .map(this::toPayDTO)
                 .collect(Collectors.toList());
         model.addAttribute("data", collect);

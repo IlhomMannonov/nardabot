@@ -66,6 +66,12 @@ public class PaymentServiceImpl implements PaymentService {
             sendMessage.setReplyMarkup(buttonService.getBtn(user));
             execute.sendMessage(sendMessage);
             return;
+        } else if (!user.getGamed()) {
+            baseService.setState(user, State.HOME);
+            sendMessage.setText(langTextService.getTxt(user, "❗️Chiqarib olinayotgan pull tikilgan pullar miqdoriga to'g'ri kelmayapdi", "❗️The withdrawn money does not correspond to the amount of bet money", "❗️Выведенные деньги не соответствуют сумме ставок"));
+            sendMessage.setReplyMarkup(buttonService.getBtn(user));
+            execute.sendMessage(sendMessage);
+            return;
         }
         baseService.setState(user, State.WITHDRAW);
         sendMessage = SendMessage.builder()
@@ -191,8 +197,8 @@ public class PaymentServiceImpl implements PaymentService {
                     .build();
             payHistoryRepo.save(payHistory);
             sendMessage.setText(langTextService.getTxt(user,
-                    "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nTo'lov tasdiqlanishi uchun 5 minutdan 40 minutgacha vaqt ketishi mukin\n",
-                    "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nIt may take 5 to 40 minutes for the payment to be approved\n"  ,
+                    "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nTo'lov tasdiqlanishi uchun 5 minutdan 40 minutgacha vaqt ketishi mumkin\n",
+                    "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nIt may take 5 to 40 minutes for the payment to be approved\n",
                     "Платежное поручение успешно создано! \nКод платежа = " + payHistory.getOrderCode() + "\nПодтверждение платежа может занять от 5 до 40 минут.\n"));
             sendMessage.setReplyMarkup(buttonService.getBtn(user));
             execute.sendMessage(sendMessage);

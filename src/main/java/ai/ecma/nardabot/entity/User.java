@@ -40,6 +40,9 @@ public class User extends AbsEntityWithUUID {
     @Enumerated(EnumType.STRING)
     private State state;
 
+    //BU BOOLEAN USER PUL SOLGANIDAN KEYIN OYIN OYNASH UCHUN MAJBURLAYDI
+    private Boolean gamed = false;
+
 
     private BigDecimal balance = new BigDecimal(0);
 
