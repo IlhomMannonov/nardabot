@@ -13,11 +13,17 @@ public interface PayHistoryRepo extends JpaRepository<PayHistory, UUID> {
     Optional<PayHistory> findByUserId(UUID user_id);
     Boolean existsByUserId(UUID user_id);
 
-    @Query(value = "select * from pay_history p where deleted=false and user_id = :user_id order by created_at asc limit 10", nativeQuery = true)
+    @Query(value = "select * from pay_history p where deleted=false and user_id = :user_id order by created_at desc limit 10", nativeQuery = true)
     List<PayHistory> findAllByUserId(UUID user_id);
 
     @Query(value = "select code from pay_history p order by code desc limit 1", nativeQuery = true)
     Long getCode();
 
     Optional<PayHistory> findFirstByUserIdAndActionOrderByCreatedAtDesc(UUID user_id, PayStatus action);
+
+    List<PayHistory> findAllByActionAndStatusOrderByCreatedAtDesc(PayStatus action, PayStatus status);
+
+
+    @Query(value = "select * from pay_history p where p.user_id = :user_id order by created_at desc limit 1", nativeQuery = true)
+    Optional<PayHistory> findFirstByUserIdAndDeletedOrderByCreatedAtDesc(UUID user_id);
 }

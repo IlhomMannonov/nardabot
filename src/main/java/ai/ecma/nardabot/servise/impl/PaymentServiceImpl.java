@@ -8,6 +8,7 @@ import ai.ecma.nardabot.enums.State;
 import ai.ecma.nardabot.repository.CardRepo;
 import ai.ecma.nardabot.repository.PayHistoryRepo;
 import ai.ecma.nardabot.repository.PayTypeRepo;
+import ai.ecma.nardabot.repository.UserRepo;
 import ai.ecma.nardabot.servise.abs.*;
 import ai.ecma.nardabot.utills.CommonUtils;
 import ai.ecma.nardabot.utills.Constant;
@@ -16,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -25,6 +29,7 @@ import java.util.*;
 public class PaymentServiceImpl implements PaymentService {
     private final PayHistoryRepo payHistoryRepo;
     private final BaseService baseService;
+    private final UserRepo userRepo;
     private final LangTextService langTextService;
     private final ButtonService buttonService;
     private final Execute execute;
@@ -171,11 +176,13 @@ public class PaymentServiceImpl implements PaymentService {
                 execute.sendMessage(sendMessage);
                 return;
             }
-
+            user.setBalance(user.getBalance().subtract(amount));
             baseService.setState(user, State.HOME);
             PayHistory payHistory = PayHistory.builder()
                     .action(PayStatus.OUT)
                     .amount(amount)
+                    .userBalance(user.getBalance())
+                    .card(cardRepo.getByUserId(user.getId()))
                     .orderCode(String.valueOf(payHistoryRepo.getCode() + 1))
                     .payType(payTypeRepo.getByType(PayTypes.CUSTOMER))
                     .active(true)
@@ -183,16 +190,36 @@ public class PaymentServiceImpl implements PaymentService {
                     .user(user)
                     .build();
             payHistoryRepo.save(payHistory);
-            user.setBalance(user.getBalance().subtract(amount));
             sendMessage.setText(langTextService.getTxt(user,
-                    "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nPulni Chiqarib olish uchun " + Constant.USERNAME + " ga payment codeni yuboring",
-                    "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nSend payment code to " + Constant.USERNAME + " to Withdraw money",
-                    "Платежное поручение успешно создано! \nКод платежа = " + payHistory.getOrderCode() + "\nОтправьте код платежа на " + Constant.USERNAME + ", чтобы снять деньги"));
+                    "To'lovnoma muvoffaqiyatli yaratildi! \nPayment Code = " + payHistory.getOrderCode() + "\nTo'lov tasdiqlanishi uchun 5 minutdan 40 minutgacha vaqt ketishi mukin\n",
+                    "Payment order created successfully! \nPayment Code = " + payHistory.getOrderCode() + "\nIt may take 5 to 40 minutes for the payment to be approved\n"  ,
+                    "Платежное поручение успешно создано! \nКод платежа = " + payHistory.getOrderCode() + "\nПодтверждение платежа может занять от 5 до 40 минут.\n"));
             sendMessage.setReplyMarkup(buttonService.getBtn(user));
             execute.sendMessage(sendMessage);
 
 
         }
+    }
+
+    private String getHash(String amount, String orderCode) {
+        MessageDigest md5 = null;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        String text = Constant.MERCHANT_ID + ":" + amount + ":" + Constant.KASSA_KEY_2 + ":" + "RUB:" + orderCode;
+        md5.update(text.getBytes());
+        byte[] digest = md5.digest();
+        String hash = DatatypeConverter.printHexBinary(digest).toLowerCase();
+
+        return "https://" +
+                "pay.freekassa.ru/?m=" +
+                Constant.MERCHANT_ID +
+                "&oa=" + amount +
+                "&o=" + orderCode +
+                "&s=" + hash +
+                "&currency=" + "RUB";
     }
 
 

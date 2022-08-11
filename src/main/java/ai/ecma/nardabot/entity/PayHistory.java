@@ -31,6 +31,8 @@ public class PayHistory extends AbsUUID {
 
     private BigDecimal amount;
 
+    private BigDecimal userBalance;
+
 
     //HOLATi
     @Enumerated(EnumType.STRING)
