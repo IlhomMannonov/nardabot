@@ -18,7 +18,6 @@ public interface PayHistoryRepo extends JpaRepository<PayHistory, UUID> {
             "                       from pay_history p\n" +
             "                       where deleted = false\n" +
             "                         and user_id = :user_id\n" +
-            "                         and active is true\n" +
             "                       limit 10) select * from t order by code ", nativeQuery = true)
     List<PayHistory> findAllByUserId(UUID user_id);
 
