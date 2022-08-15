@@ -45,6 +45,8 @@ public class PayHistory extends AbsUUID {
     @ManyToOne
     private Card card;
 
+    private String payedCard;
+
     @Column(name = "code")
     private String orderCode;
 

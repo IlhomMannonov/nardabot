@@ -68,12 +68,13 @@ public class AdminServiceImpl implements AdminService {
         payDTO.setId(payHistory.getId());
         payDTO.setUserName(payHistory.getUser().getName());
         payDTO.setChatId(payHistory.getUser().getChatId());
+        payDTO.setCard(payHistory.getPayedCard());
         payDTO.setPhone(payHistory.getUser().getPhone());
         payDTO.setOrderCode(payHistory.getOrderCode());
         payDTO.setUserBalance(payHistory.getUserBalance());
         payDTO.setWithdraw(payHistory.getAmount());
         payDTO.setTime(payHistory.getCreatedAt());
-        payDTO.setCard(payHistory.getCard() == null ? "" : payHistory.getCard().getNumber());
+        payDTO.setCard(payHistory.getPayedCard() == null ? "" : payHistory.getPayedCard());
         return payDTO;
     }
 }

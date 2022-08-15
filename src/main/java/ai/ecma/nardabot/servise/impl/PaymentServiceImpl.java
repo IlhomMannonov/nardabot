@@ -1,5 +1,6 @@
 package ai.ecma.nardabot.servise.impl;
 
+import ai.ecma.nardabot.entity.Card;
 import ai.ecma.nardabot.entity.PayHistory;
 import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.PayStatus;
@@ -184,11 +185,13 @@ public class PaymentServiceImpl implements PaymentService {
             }
             user.setBalance(user.getBalance().subtract(amount));
             baseService.setState(user, State.HOME);
+            Card card = cardRepo.getByUserId(user.getId());
             PayHistory payHistory = PayHistory.builder()
                     .action(PayStatus.OUT)
                     .amount(amount)
                     .userBalance(user.getBalance())
-                    .card(cardRepo.getByUserId(user.getId()))
+                    .card(card)
+                    .payedCard(card.getNumber())
                     .orderCode(String.valueOf(payHistoryRepo.getCode() + 1))
                     .payType(payTypeRepo.getByType(PayTypes.CUSTOMER))
                     .active(true)
