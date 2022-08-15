@@ -53,23 +53,14 @@ public class PaymentServiceImpl implements PaymentService {
         execute.sendMessage(sendMessage);
     }
 
-    private void send(User user) {
-    }
 
     @Override
-
     public void withdraw(Update update, User user) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(user.getChatId());
         if (!cardRepo.existsByUserId(user.getId())) {
             baseService.setState(user, State.HOME);
             sendMessage.setText(langTextService.getTxt(user, "Sizda Karta mavjud emas, kartangizni sozlamalar bo'limidan qo'shasiz", "You do not have a Card, add your card from the settings section", "У вас нет Карты, добавьте свою карту из раздела настроек"));
-            sendMessage.setReplyMarkup(buttonService.getBtn(user));
-            execute.sendMessage(sendMessage);
-            return;
-        } else if (!user.getGamed()) {
-            baseService.setState(user, State.HOME);
-            sendMessage.setText(langTextService.getTxt(user, "❗️Chiqarib olinayotgan pull tikilgan pullar miqdoriga to'g'ri kelmayapdi", "❗️The withdrawn money does not correspond to the amount of bet money", "❗️Выведенные деньги не соответствуют сумме ставок"));
             sendMessage.setReplyMarkup(buttonService.getBtn(user));
             execute.sendMessage(sendMessage);
             return;
@@ -114,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
                 return;
             }
             if (Constant.MIN_BET.compareTo(sum) > 0) {
-                sendMessage.setText(langTextService.getTxt(user, "Kiritilgan pul belgilangan miqdoga to'g'ri kelmadi\nMin BET: " + Constant.MIN_BET, "The amount entered did not correspond to the specified amount\n Min BET: " + Constant.MIN_BET, "Введенная сумма не соответствует указанной сумме\n Min BET: " + Constant.MIN_BET));
+                sendMessage.setText(langTextService.getTxt(user, "Kiritilgan pul belgilangan miqdoga to'g'ri kelmadi\nMin : " + Constant.MIN_DEPOSIT, "The amount entered did not correspond to the specified amount\n Min BET: " + Constant.MIN_BET, "Введенная сумма не соответствует указанной сумме\n Min BET: " + Constant.MIN_BET));
                 execute.sendMessage(sendMessage);
                 return;
             }
@@ -176,10 +167,15 @@ public class PaymentServiceImpl implements PaymentService {
                 sendMessage.setReplyMarkup(buttonService.getBtn(user));
                 execute.sendMessage(sendMessage);
                 return;
-            }
-            if (minWithdraw > 0) {
+            } else if (minWithdraw > 0) {
                 NumberFormat numberFormat = NumberFormat.getNumberInstance();
                 sendMessage.setText(langTextService.getTxt(user, "Botdan eng kam pul chiqarish: " + numberFormat.format(Constant.MIN_WITHDRAW) + " so'm", "The minimum withdrawal from the bot: " + numberFormat.format(Constant.MIN_WITHDRAW) + " sum", "Минимальный вывод с бота: " + numberFormat.format(Constant.MIN_WITHDRAW) + " sum"));
+                execute.sendMessage(sendMessage);
+                return;
+            } else if (!user.getGamed()) {
+                baseService.setState(user, State.HOME);
+                sendMessage.setText(langTextService.getTxt(user, "❗️Chiqarib olinayotgan pull tikilgan pullar miqdoriga to'g'ri kelmayapdi", "❗️The withdrawn money does not correspond to the amount of bet money", "❗️Выведенные деньги не соответствуют сумме ставок"));
+                sendMessage.setReplyMarkup(buttonService.getBtn(user));
                 execute.sendMessage(sendMessage);
                 return;
             }

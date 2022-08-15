@@ -1,13 +1,16 @@
 package ai.ecma.nardabot.servise.impl;
 
 import ai.ecma.nardabot.entity.PayHistory;
+import ai.ecma.nardabot.entity.PayType;
 import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.PayStatus;
+import ai.ecma.nardabot.enums.PayTypes;
 import ai.ecma.nardabot.enums.State;
 import ai.ecma.nardabot.repository.PayHistoryRepo;
 import ai.ecma.nardabot.repository.UserRepo;
 import ai.ecma.nardabot.servise.abs.*;
 import ai.ecma.nardabot.utills.CommonUtils;
+import ai.ecma.nardabot.utills.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -103,9 +106,9 @@ public class HomeServiceImpl implements HomeService {
             baseService.setState(user, State.HISTORY);
             for (PayHistory payHistory : payHistories) {
                 String sb = langTextService.getTxt(user,
-                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Pul Soluvchi: " : "⤴️ Pul chiqaruvchi: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 To'lov turi: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 To'lov summasi: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " So'm</b>" + "\n" + "Holat: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Vaqt: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n",
-                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Money came: " : "⤴️ Money came out: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Payment Type: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Payment Amount: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Sum</b>" + "\n" + "Status: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Time: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n",
-                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Пришли деньги: " : "⤴️ Деньги вышли: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Тип платежа: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Сумма платежа: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Сум</b>" + "\n" + "Статус: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Время: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + "\n\n")+"Order code: "+ payHistory.getOrderCode();
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Pul Soluvchi: " : "⤴️ Pul chiqaruvchi: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 To'lov turi: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 To'lov summasi: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " So'm</b>" + "\n" + "Holat: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Vaqt: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + (payHistory.getAction().name().equals(PayStatus.IN.name()) ? "\nTolovni yakunlash uchun " + Constant.USERNAME + " bilan bog'laning\n" : ""),
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Money came: " : "⤴️ Money came out: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Payment Type: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Payment Amount: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Sum</b>" + "\n" + "Status: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Time: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + (payHistory.getAction().name().equals(PayStatus.IN.name()) ? "\n Contact " + Constant.USERNAME + " to complete payment\n" : ""),
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Пришли деньги: " : "⤴️ Деньги вышли: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Тип платежа: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Сумма платежа: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Сум</b>" + "\n" + "Статус: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Время: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + (payHistory.getAction().name().equals(PayStatus.IN.name()) ? "\nСвяжитесь с " + Constant.USERNAME + " для завершения платежа\n" : "")) + "\n\nOrder code: " + payHistory.getOrderCode();
                 sendMessage.setText(sb);
                 sendMessage.setReplyMarkup(buttonService.getInlineBtn(user, "history:" + payHistory.getId()));
                 execute.sendMessage(sendMessage);

@@ -56,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String payedPage(Model model) {
-        List<PayDTO> collect = payHistoryRepo.findAllByActionAndStatusOrderByCreatedAtDesc(PayStatus.OUT.name(), PayStatus.PAYED.name(), false).stream()
+        List<PayDTO> collect = payHistoryRepo.findAllByActionAndStatusOrderByCreatedAtDesc(PayStatus.OUT.name(), PayStatus.PAYED.name(), true).stream()
                 .map(this::toPayDTO)
                 .collect(Collectors.toList());
         model.addAttribute("data", collect);
