@@ -65,9 +65,8 @@ public class SettingServiceImpl implements SettingsService {
                         .chatId(user.getChatId())
                         .replyMarkup(buttonService.getBtn(user))
                         .build();
+                execute.sendMessage(sendMessage);
             }
-
-            execute.sendMessage(sendMessage);
 
 
         } else {

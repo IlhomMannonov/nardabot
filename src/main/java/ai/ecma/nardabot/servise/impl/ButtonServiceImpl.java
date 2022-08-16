@@ -73,9 +73,9 @@ public class ButtonServiceImpl implements ButtonService {
                 );
                 break;
             case HISTORY:
-//                markup = btn.markup(btn.row(
-//                        btn.button(langTextService.getTxt(user, "\uD83D\uDDD1 O'chirish", "\uD83D\uDDD1 Delete", "\uD83D\uDDD1 Удалить"), id)
-//                ));
+                markup = btn.markup(btn.row(
+                        btn.button(langTextService.getTxt(user, "\uD83D\uDDD1 O'chirish", "\uD83D\uDDD1 Delete", "\uD83D\uDDD1 Удалить"), id)
+                ));
                 break;
             case SETTINGS:
                 if (Objects.equals(id, "add")) {

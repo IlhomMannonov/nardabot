@@ -110,7 +110,11 @@ public class HomeServiceImpl implements HomeService {
                         (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Money came: " : "⤴️ Money came out: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Payment Type: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Payment Amount: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Sum</b>" + "\n" + "Status: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Time: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + ((payHistory.getStatus().name().equals(PayStatus.PENDING.name()) && payHistory.getAction().name().equals(PayStatus.IN.name())) ? "\n Contact " + Constant.USERNAME + " to complete payment\n" : ""),
                         (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Пришли деньги: " : "⤴️ Деньги вышли: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Тип платежа: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Сумма платежа: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Сум</b>" + "\n" + "Статус: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Время: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + ((payHistory.getStatus().name().equals(PayStatus.PENDING.name()) && payHistory.getAction().name().equals(PayStatus.IN.name())) ? "\nСвяжитесь с " + Constant.USERNAME + " для завершения платежа\n" : "")) + "\n\nOrder code: " + payHistory.getOrderCode();
                 sendMessage.setText(sb);
-                sendMessage.setReplyMarkup(buttonService.getInlineBtn(user, "history:" + payHistory.getId()));
+                if (payHistory.getAction().equals(PayStatus.IN)) {
+                    sendMessage.setReplyMarkup(buttonService.getInlineBtn(user, "history:" + payHistory.getId()));
+                }else{
+                    sendMessage.setReplyMarkup(null);
+                }
                 execute.sendMessage(sendMessage);
             }
             baseService.setState(user, State.HOME);
