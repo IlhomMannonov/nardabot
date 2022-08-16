@@ -56,7 +56,7 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
         //USERGA YANGI HABAR JONATAMIZ SHUNDAN SONG
         SendMessage sendMessage = SendMessage.builder()
                 .replyMarkup(buttonService.getBtn(user))
-                .text(langTextService.buttonText(user))
+                .text(langTextService.getTxt(user,"Telefon raqamni yuborish uchun pastdagi tugmani bosing","Click the button below to submit a phone number","Нажмите кнопку ниже, чтобы отправить номер телефона"))
                 .chatId(user.getChatId())
                 .build();
         execute.sendMessage(sendMessage);
