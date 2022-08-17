@@ -172,7 +172,7 @@ public class PaymentServiceImpl implements PaymentService {
                 sendMessage.setText(langTextService.getTxt(user, "Botdan eng kam pul chiqarish: " + numberFormat.format(Constant.MIN_WITHDRAW) + " so'm", "The minimum withdrawal from the bot: " + numberFormat.format(Constant.MIN_WITHDRAW) + " sum", "Минимальный вывод с бота: " + numberFormat.format(Constant.MIN_WITHDRAW) + " sum"));
                 execute.sendMessage(sendMessage);
                 return;
-            } else if (!user.getGamed()) {
+            } else if (!user.isGamed()) {
                 baseService.setState(user, State.HOME);
                 sendMessage.setText(langTextService.getTxt(user, "❗️Chiqarib olinayotgan pull tikilgan pullar miqdoriga to'g'ri kelmayapdi", "❗️The withdrawn money does not correspond to the amount of bet money", "❗️Выведенные деньги не соответствуют сумме ставок"));
                 sendMessage.setReplyMarkup(buttonService.getBtn(user));

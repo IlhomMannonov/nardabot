@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,6 +33,8 @@ public class HomeServiceImpl implements HomeService {
     private final Execute execute;
     private final PayHistoryRepo payHistoryRepo;
 
+
+    public  final long HOUR = 3600 * 5000;
 
     @Override
     public void home(Update update) {
@@ -106,13 +109,13 @@ public class HomeServiceImpl implements HomeService {
             baseService.setState(user, State.HISTORY);
             for (PayHistory payHistory : payHistories) {
                 String sb = langTextService.getTxt(user,
-                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Pul Soluvchi: " : "⤴️ Pul chiqaruvchi: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 To'lov turi: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 To'lov summasi: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " So'm</b>" + "\n" + "Holat: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Vaqt: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + ((payHistory.getStatus().name().equals(PayStatus.PENDING.name()) && payHistory.getAction().name().equals(PayStatus.IN.name())) ? "\nTolovni yakunlash uchun " + Constant.USERNAME + " bilan bog'laning\n" : ""),
+                        (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Pul Soluvchi: " : "⤴️ Pul chiqaruvchi: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 To'lov turi: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 To'lov summasi: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " So'm</b>" + "\n" + "Holat: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Vaqt: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(new Date(payHistory.getCreatedAt().getTime() + HOUR)) + ((payHistory.getStatus().name().equals(PayStatus.PENDING.name()) && payHistory.getAction().name().equals(PayStatus.IN.name())) ? "\nTolovni yakunlash uchun " + Constant.USERNAME + " bilan bog'laning\n" : ""),
                         (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Money came: " : "⤴️ Money came out: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Payment Type: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Payment Amount: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Sum</b>" + "\n" + "Status: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Time: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + ((payHistory.getStatus().name().equals(PayStatus.PENDING.name()) && payHistory.getAction().name().equals(PayStatus.IN.name())) ? "\n Contact " + Constant.USERNAME + " to complete payment\n" : ""),
                         (payHistory.getAction().equals(PayStatus.IN) ? "⤵️ Пришли деньги: " : "⤴️ Деньги вышли: ") + "<b>" + user.getName() + "</b>" + "\n\uD83D\uDCB3 Тип платежа: " + payHistory.getPayType().getType().name() + "\n\uD83D\uDCB5 Сумма платежа: " + "<b>" + numberFormat.format(payHistory.getAmount()) + " Сум</b>" + "\n" + "Статус: " + getStatus(user, payHistory.getStatus()) + "\n\uD83D\uDD70 Время: " + new SimpleDateFormat("MM/dd/yyyy HH:mm").format(payHistory.getCreatedAt()) + ((payHistory.getStatus().name().equals(PayStatus.PENDING.name()) && payHistory.getAction().name().equals(PayStatus.IN.name())) ? "\nСвяжитесь с " + Constant.USERNAME + " для завершения платежа\n" : "")) + "\n\nOrder code: " + payHistory.getOrderCode();
                 sendMessage.setText(sb);
                 if (payHistory.getAction().equals(PayStatus.IN) && payHistory.getStatus().equals(PayStatus.PENDING)) {
                     sendMessage.setReplyMarkup(buttonService.getInlineBtn(user, "history:" + payHistory.getId()));
-                }else{
+                } else {
                     sendMessage.setReplyMarkup(null);
                 }
                 execute.sendMessage(sendMessage);
