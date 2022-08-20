@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 public interface Constant {
     String URL = "https://api.telegram.org/";
 
+    String SEND_UPDATE_PATH = "http://localhost:8080/client";
+
     String KASSA_KEY_1 = "968369134260970c82ac51d8645cb011";
     String KASSA_KEY_2 = "d4as6d54654sf4sda";
     String MERCHANT_ID = "17756";

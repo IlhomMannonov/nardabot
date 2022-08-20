@@ -11,15 +11,15 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/refresh")
 @RequiredArgsConstructor
 public class RefreshController {
-    private final RestTemplate restTemplate;
-
-    @GetMapping
-    public String refresh() {
-        return "ok";
-    }
-
-        @Scheduled(fixedDelay = 1200000) // 20 minut
-        public void refreshing() {
-            restTemplate.getForEntity("https://narda.herokuapp.com/refresh", String.class);
-        }
+//    private final RestTemplate restTemplate;
+//
+//    @GetMapping
+//    public String refresh() {
+//        return "ok";
+//    }
+//
+//        @Scheduled(fixedDelay = 1200000) // 20 minut
+//        public void refreshing() {
+//            restTemplate.getForEntity("https://narda.herokuapp.com/refresh", String.class);
+//        }
 }
