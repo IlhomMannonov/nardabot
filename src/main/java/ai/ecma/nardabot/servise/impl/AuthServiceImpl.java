@@ -26,13 +26,11 @@ public class AuthServiceImpl implements AuthService {
         user.setName(update.getMessage().getChat().getFirstName());
 
         baseService.setState(user, State.CHOICE_LANG);
-
         execute.sendMessage(SendMessage.builder()
                 .replyMarkup(buttonService.getInlineBtn(user,""))
                 .text("Please choice your language")
                 .chatId(user.getChatId())
                 .build());
-
     }
 
     @Override

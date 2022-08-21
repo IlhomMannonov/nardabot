@@ -125,10 +125,24 @@ public class SettingServiceImpl implements SettingsService {
             User user = CommonUtils.getUser();
             String text = update.getMessage().getText();
             String see = langTextService.getTxt(user, "Mening Kartam", "My Card", "Моя карточка");
+            String lang = langTextService.getTxt(user, "Tilni o'zgartirish", "Change language", "Изменение языка");
             if (Objects.equals(text, see)) {
                 myCard(update);
+            } else if (Objects.equals(lang, text)) {
+                lang(update);
             }
         }
+    }
+
+    @Override
+    public void lang(Update update) {
+        User user = CommonUtils.getUser();
+        baseService.setState(user, State.EDIT_LANG);
+        execute.sendMessage(SendMessage.builder()
+                .replyMarkup(buttonService.getInlineBtn(user, ""))
+                .text("Please choice your language")
+                .chatId(user.getChatId())
+                .build());
     }
 
     @Override

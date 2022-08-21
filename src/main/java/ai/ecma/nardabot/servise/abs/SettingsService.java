@@ -11,4 +11,6 @@ public interface SettingsService {
     void setting(Update update);
 
     void editCard(Update update);
+
+    void lang (Update update);
 }

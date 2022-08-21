@@ -7,6 +7,7 @@ import ai.ecma.nardabot.enums.PayStatus;
 import ai.ecma.nardabot.enums.PayTypes;
 import ai.ecma.nardabot.enums.State;
 import ai.ecma.nardabot.repository.PayHistoryRepo;
+import ai.ecma.nardabot.repository.ReferralRepo;
 import ai.ecma.nardabot.repository.UserRepo;
 import ai.ecma.nardabot.servise.abs.*;
 import ai.ecma.nardabot.utills.CommonUtils;
@@ -32,9 +33,8 @@ public class HomeServiceImpl implements HomeService {
     private final ButtonService buttonService;
     private final Execute execute;
     private final PayHistoryRepo payHistoryRepo;
-
-
-    public  final long HOUR = 3600 * 5000;
+    private final ReferralRepo referralRepo;
+    public final long HOUR = 3600 * 5000;
 
     @Override
     public void home(Update update) {
@@ -84,12 +84,14 @@ public class HomeServiceImpl implements HomeService {
 
 
     private void profile(Update update, User user) {
+
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        Integer rf = referralRepo.countByFromUser(user);
         SendMessage sendMessage = SendMessage.builder()
                 .text(langTextService.getTxt(user,
                         "Ism: " + user.getName() + "\nTelefon: " + user.getPhone() + "\nHisob: <b>" + numberFormat.format(user.getBalance()) + " So'm</b>",
-                        "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: <b>" + numberFormat.format(user.getBalance()) + " So'm</b>",
-                        "Имя:" + user.getName() + "\nТелефон:" + user.getPhone() + "\nБаланс: <b>" + numberFormat.format(user.getBalance()) + " So'm </b>"))
+                        "Name: " + user.getName() + "\nPhone: " + user.getPhone() + "\nBalance: <b>" + numberFormat.format(user.getBalance()) + " So'm</b>" ,
+                        "Имя:" + user.getName() + "\nТелефон:" + user.getPhone() + "\nБаланс: <b>" + numberFormat.format(user.getBalance()) + " So'm </b>" ))
                 .chatId(user.getChatId())
                 .build();
         sendMessage.enableHtml(true);

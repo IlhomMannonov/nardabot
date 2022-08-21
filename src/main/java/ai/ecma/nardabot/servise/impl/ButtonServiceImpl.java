@@ -31,6 +31,7 @@ public class ButtonServiceImpl implements ButtonService {
         State value = State.values()[user.getState().ordinal()];
         switch (value) {
             case CHOICE_LANG:
+            case EDIT_LANG:
                 markup = btn.markup(
                         btn.row(
                                 btn.button(Lang.EN.name(), Lang.EN.name()),
@@ -58,10 +59,10 @@ public class ButtonServiceImpl implements ButtonService {
                                 btn.button("X/2", "BACKGAMMON:edit:x/2"),
                                 btn.button("MAX", "BACKGAMMON:edit:max")
                         ), btn.row(
-                                btn.button(langTextService.getTxt(user, "Hisobingiz: " + user.getBalance() + " so'm", "баланс: " + user.getBalance() + " сум", "Balance: " + user.getBalance() + " sum"), "none"),
-                                btn.button(langTextService.getTxt(user, "Stavka ", "Ставка ", "Stavka ") + narda.getAmount(), "none")
+                                btn.button(langTextService.getTxt(user, "Hisobingiz: " + user.getBalance() + " so'm", "Balance: "+ user.getBalance() + " сум", "баланс: " + user.getBalance() + " sum"), "none"),
+                                btn.button(langTextService.getTxt(user, "Stavka ", "Stavka ", "Ставка " ) + narda.getAmount(), "none")
                         ), btn.row(
-                                btn.button(langTextService.getTxt(user, "Boshlash", "Начало ", "Start"), "BACKGAMMON:start")
+                                btn.button(langTextService.getTxt(user, "Boshlash", "Start", "Начало "), "BACKGAMMON:start")
                         )
                 );
                 break;
@@ -149,8 +150,8 @@ public class ButtonServiceImpl implements ButtonService {
                         btn.rowList(
                                 btn.row(
                                         btn.button(langTextService.getTxt(user, "Mening Kartam", "My Card", "Моя карточка"), false, false)
-                                      //  btn.button(langTextService.getTxt(user, "Karta qo'shish", "Add Card", "Добавить карту"), false, false)
                                 ),
+                                btn.row(btn.button(langTextService.getTxt(user, "Tilni o'zgartirish", "Change language", "Изменение языка"), false, false)),
                                 btn.row(btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false))
 
                         )

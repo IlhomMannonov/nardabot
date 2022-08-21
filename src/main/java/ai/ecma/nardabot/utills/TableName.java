@@ -9,4 +9,6 @@ public interface TableName {
     String NARDA = "narda";
     String ATTACHMENT = "attachment";
     String CARD = "card";
+    String REFERRAL = "referral";
+    String PARTNER = "partner";
 }

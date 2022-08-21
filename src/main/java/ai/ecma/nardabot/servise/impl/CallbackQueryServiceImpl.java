@@ -56,10 +56,31 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
         //USERGA YANGI HABAR JONATAMIZ SHUNDAN SONG
         SendMessage sendMessage = SendMessage.builder()
                 .replyMarkup(buttonService.getBtn(user))
-                .text(langTextService.getTxt(user,"Telefon raqamni yuborish uchun pastdagi tugmani bosing","Click the button below to submit a phone number","Нажмите кнопку ниже, чтобы отправить номер телефона"))
+                .text(langTextService.getTxt(user, "Telefon raqamni yuborish uchun pastdagi tugmani bosing", "Click the button below to submit a phone number", "Нажмите кнопку ниже, чтобы отправить номер телефона"))
                 .chatId(user.getChatId())
                 .build();
         execute.sendMessage(sendMessage);
+    }
+
+    @Override
+    public void editLang(Update update, User user) {
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        String data = update.getCallbackQuery().getData();
+        if (data.equals(Lang.UZ.name()))
+            user.setLanguage(Lang.UZ);
+        else if (data.equals(Lang.EN.name()))
+            user.setLanguage(Lang.EN);
+        else if (data.equals(Lang.RU.name()))
+            user.setLanguage(Lang.RU);
+        execute.deleteMessage(callbackQuery.getMessage().getMessageId(), user.getChatId());
+        baseService.setState(user, State.SETTINGS);
+        SendMessage settings = SendMessage
+                .builder()
+                .text("Settings")
+                .replyMarkup(buttonService.getBtn(user))
+                .chatId(user.getChatId())
+                .build();
+        execute.sendMessage(settings);
     }
 
     @Override

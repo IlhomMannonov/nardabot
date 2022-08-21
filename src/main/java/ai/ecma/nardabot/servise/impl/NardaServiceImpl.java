@@ -180,13 +180,13 @@ public class NardaServiceImpl implements NardaService {
         NardaState nardaState = generateGame(narda.getType());
         boolean isUpdate = false;
         String text = null;
-        String maglubiyat = langTextService.getTxt(user, "  \uD83D\uDE14 Omadsizlik \n taktor urinib ko'ring", "   \uD83D\uDE14 Поражение\nПожалуйста, попробуйте еще раз", "  \uD83D\uDE14 Fail\ntry the tractor");
+        String maglubiyat = langTextService.getTxt(user, "  \uD83D\uDE14 Omadsizlik \n taktor urinib ko'ring", "  \uD83D\uDE14 Fail\ntry the tractor", "   \uD83D\uDE14 Поражение\nПожалуйста, попробуйте еще раз" );
         int compareTo = user.getBalance().compareTo(narda.getAmount());
         if (compareTo < 0) {
-            text = langTextService.getTxt(user, "Hisobingizda mablag' yetarli emas", "На вашем счету недостаточно денег", "There is not enough money in your account");
+            text = langTextService.getTxt(user, "Hisobingizda mablag' yetarli emas", "There is not enough money in your account", "На вашем счету недостаточно денег");
         } else {
             isUpdate = true;
-            text = "✅ " + langTextService.getTxt(user, "G'alaba \nYutuq: ", "Победа \nвыигрыш: ", "Victory \nWinning: ");
+            text = "✅ " + langTextService.getTxt(user, "G'alaba \nYutuq: ", "Victory \nWinning: ", "Победа \nвыигрыш: ");
             if (Objects.equals(narda.getType(), NardaType.OVER)) {
                 if (nardaState.getScore() > 7) {
                     BigDecimal win = narda.getAmount().multiply(Constant.NARDA_KF_OVER);

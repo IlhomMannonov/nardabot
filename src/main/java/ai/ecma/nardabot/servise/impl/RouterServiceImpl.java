@@ -1,9 +1,11 @@
 package ai.ecma.nardabot.servise.impl;
 
+import ai.ecma.nardabot.entity.Referral;
 import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.Lang;
 import ai.ecma.nardabot.enums.RoleNames;
 import ai.ecma.nardabot.enums.State;
+import ai.ecma.nardabot.repository.ReferralRepo;
 import ai.ecma.nardabot.repository.RoleRepo;
 import ai.ecma.nardabot.repository.UserRepo;
 import ai.ecma.nardabot.servise.abs.*;
@@ -11,10 +13,9 @@ import ai.ecma.nardabot.utills.CommonUtils;
 import ai.ecma.nardabot.utills.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.payments.LabeledPrice;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -34,8 +35,10 @@ public class RouterServiceImpl implements RouterService {
     private final BackService backService;
     private final PaymentService paymentService;
     private final Execute execute;
+    private final LangTextService langTextService;
     private final ChannelService channelService;
     private final SettingsService settingsService;
+    private final ReferralRepo referralRepo;
 
     public void getUpdate(Update update) {
 
@@ -44,7 +47,8 @@ public class RouterServiceImpl implements RouterService {
         //logig
         if (update.hasMessage()) {
             if (filter(update)) {
-                lang(update);
+//                lang(update);
+                referral(update.getMessage());
                 backService.back(update);
                 messageRouter(update);
             }
@@ -65,10 +69,10 @@ public class RouterServiceImpl implements RouterService {
                 case "/languz":
                     user.setLanguage(Lang.UZ);
                     break;
-                case "langen":
+                case "/langen":
                     user.setLanguage(Lang.EN);
                     break;
-                case "langru":
+                case "/langru":
                     user.setLanguage(Lang.RU);
                     break;
             }
@@ -82,6 +86,8 @@ public class RouterServiceImpl implements RouterService {
             case CHOICE_LANG:
                 callbackQueryService.choiceLang(update);
                 break;
+            case EDIT_LANG:
+                callbackQueryService.editLang(update,user);
             case NARDA:
                 nardaService.choiceButtonsWithCallbackQuery(update);
                 break;
@@ -188,8 +194,31 @@ public class RouterServiceImpl implements RouterService {
         return true;
     }
 
-    private boolean channelOrBot(Update update) {
-        return (update.hasCallbackQuery() && !update.getCallbackQuery().getData().startsWith("channel"));
+    void referral(Message message) {
+        if (message.hasText() && message.getText().startsWith("/start ")) {
+            String text = message.getText();
+            String[] split = text.split(" ");
+            if (split[1].startsWith("ref")) {
+                Optional<User> op = userRepo.findByChatId(split[1].substring(3));
+                if (op.isPresent()) {
+                    User user = CommonUtils.getUser();
+                    if (!referralRepo.existsByToUser(user) && !(user.getState().equals(State.CHOICE_LANG) || user.getState().equals(State.SEND_PHONE))){
+
+                        Referral referral = Referral.builder()
+                                .fromUser(op.get())
+                                .toUser(user)
+                                .build();
+
+                        try {
+                            referralRepo.save(referral);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
 }

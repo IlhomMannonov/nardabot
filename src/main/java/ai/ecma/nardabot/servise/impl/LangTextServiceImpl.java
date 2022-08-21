@@ -64,6 +64,9 @@ public class LangTextServiceImpl implements LangTextService {
                         "Tolovlarni kartanigizga tushirib olish uchun karta qoshishingiz kerak kartnigizni 16 talik raqalarini kiriting",
                         "You need to add a card to download payments to your card. Enter your 16-digit card number.",
                         "Вам нужно добавить карту, чтобы загружать платежи на вашу карту. Введите 16-значный номер карты.");
+
+                break;
+
         }
         return text;
     }
