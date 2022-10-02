@@ -18,7 +18,7 @@ public interface Btn {
 
     ReplyKeyboardMarkup markupReplay(List<KeyboardRow> rows);
 
-    List<KeyboardRow> rowList(KeyboardRow... keyboardRows);
+        List<KeyboardRow> rowList(KeyboardRow... keyboardRows);
 
     KeyboardRow row(KeyboardButton... buttons);
 

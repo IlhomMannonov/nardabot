@@ -11,4 +11,5 @@ public interface TableName {
     String CARD = "card";
     String REFERRAL = "referral";
     String PARTNER = "partner";
+    String ADS = "ads";
 }

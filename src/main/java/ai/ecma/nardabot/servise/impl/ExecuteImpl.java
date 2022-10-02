@@ -67,12 +67,21 @@ public class ExecuteImpl implements Execute {
 
     @Override
     public void sendPhoto(SendPhoto sendPhoto) {
-        feign.sendPhoto(BOT, sendPhoto);
+        try {
+
+            feign.sendPhoto(BOT, sendPhoto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void sendVideo(SendVideo sendVideo) {
-        feign.sendVideo(BOT, sendVideo);
+        try {
+            feign.sendVideo(BOT, sendVideo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

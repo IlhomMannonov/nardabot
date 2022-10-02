@@ -1,5 +1,7 @@
 package ai.ecma.nardabot.servise.impl;
 
+import ai.ecma.nardabot.admin.service.abs.AdminHomeService;
+import ai.ecma.nardabot.admin.service.abs.AdsService;
 import ai.ecma.nardabot.entity.Referral;
 import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.enums.Lang;
@@ -39,6 +41,8 @@ public class RouterServiceImpl implements RouterService {
     private final ChannelService channelService;
     private final SettingsService settingsService;
     private final ReferralRepo referralRepo;
+    private final AdminHomeService adminHomeService;
+    private final AdsService adsService;
 
     public void getUpdate(Update update) {
 
@@ -47,8 +51,8 @@ public class RouterServiceImpl implements RouterService {
         //logig
         if (update.hasMessage()) {
             if (filter(update)) {
-//                lang(update);
-                referral(update.getMessage());
+//                Hozircha ishlatilmaydi
+//                referral(update.getMessage());
                 backService.back(update);
                 messageRouter(update);
             }
@@ -62,22 +66,6 @@ public class RouterServiceImpl implements RouterService {
 
     }
 
-    private void lang(Update update) {
-        if (update.getMessage().hasText()) {
-            User user = CommonUtils.getUser();
-            switch (update.getMessage().getText()) {
-                case "/languz":
-                    user.setLanguage(Lang.UZ);
-                    break;
-                case "/langen":
-                    user.setLanguage(Lang.EN);
-                    break;
-                case "/langru":
-                    user.setLanguage(Lang.RU);
-                    break;
-            }
-        }
-    }
 
     private void callBackRouter(Update update) {
         User user = CommonUtils.getUser();
@@ -87,7 +75,7 @@ public class RouterServiceImpl implements RouterService {
                 callbackQueryService.choiceLang(update);
                 break;
             case EDIT_LANG:
-                callbackQueryService.editLang(update,user);
+                callbackQueryService.editLang(update, user);
             case NARDA:
                 nardaService.choiceButtonsWithCallbackQuery(update);
                 break;
@@ -108,8 +96,12 @@ public class RouterServiceImpl implements RouterService {
     private void messageRouter(Update update) {
         User user = CommonUtils.getUser();
         if (user.getPhone() != null && Objects.equals(update.getMessage().getText(), "/start")) {
-            baseService.setState(user, State.HOME);
-            authService.getHome(update);
+            if (user.getRole().getName().name().equals(RoleNames.ROLE_ADMIN.name())) {
+                adminHomeService.home(update, user);
+            } else {
+                baseService.setState(user, State.HOME);
+                authService.getHome(update);
+            }
         }
         State value = State.values()[user.getState().ordinal()];
         switch (value) {
@@ -144,7 +136,24 @@ public class RouterServiceImpl implements RouterService {
             case EDIT_CARD:
                 settingsService.editCard(update);
                 break;
-
+            case ADMIN_HOME:
+                adminHomeService.homeRouter(update, user);
+                break;
+            case ADS_HOME:
+                adsService.adsRouter(update, user);
+                break;
+            case ADS_ADD_TEXT:
+                adsService.addAdsText(update, user);
+                break;
+            case ADS_ADD_MEDIA:
+                adsService.addMedia(update, user);
+                break;
+            case ADS_ADD_BUTTON:
+                adsService.addButton(update,user);
+                break;
+            case ADS_CHOICE_SENDING:
+                adsService.checkSending(update, user);
+                break;
         }
     }
 
@@ -202,7 +211,7 @@ public class RouterServiceImpl implements RouterService {
                 Optional<User> op = userRepo.findByChatId(split[1].substring(3));
                 if (op.isPresent()) {
                     User user = CommonUtils.getUser();
-                    if (!referralRepo.existsByToUser(user) && !(user.getState().equals(State.CHOICE_LANG) || user.getState().equals(State.SEND_PHONE))){
+                    if (!referralRepo.existsByToUser(user) && !(user.getState().equals(State.CHOICE_LANG) || user.getState().equals(State.SEND_PHONE))) {
 
                         Referral referral = Referral.builder()
                                 .fromUser(op.get())

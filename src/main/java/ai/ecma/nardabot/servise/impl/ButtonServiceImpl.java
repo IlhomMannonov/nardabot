@@ -4,6 +4,7 @@ import ai.ecma.nardabot.entity.User;
 import ai.ecma.nardabot.entity.narda.Narda;
 import ai.ecma.nardabot.enums.Lang;
 import ai.ecma.nardabot.enums.NardaType;
+import ai.ecma.nardabot.enums.RoleNames;
 import ai.ecma.nardabot.enums.State;
 import ai.ecma.nardabot.repository.NardaRepo;
 import ai.ecma.nardabot.servise.abs.Btn;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.util.Objects;
@@ -59,8 +61,8 @@ public class ButtonServiceImpl implements ButtonService {
                                 btn.button("X/2", "BACKGAMMON:edit:x/2"),
                                 btn.button("MAX", "BACKGAMMON:edit:max")
                         ), btn.row(
-                                btn.button(langTextService.getTxt(user, "Hisobingiz: " + user.getBalance() + " so'm", "Balance: "+ user.getBalance() + " сум", "баланс: " + user.getBalance() + " sum"), "none"),
-                                btn.button(langTextService.getTxt(user, "Stavka ", "Stavka ", "Ставка " ) + narda.getAmount(), "none")
+                                btn.button(langTextService.getTxt(user, "Hisobingiz: " + user.getBalance() + " so'm", "Balance: " + user.getBalance() + " сум", "баланс: " + user.getBalance() + " sum"), "none"),
+                                btn.button(langTextService.getTxt(user, "Stavka ", "Stavka ", "Ставка ") + narda.getAmount(), "none")
                         ), btn.row(
                                 btn.button(langTextService.getTxt(user, "Boshlash", "Start", "Начало "), "BACKGAMMON:start")
                         )
@@ -157,6 +159,62 @@ public class ButtonServiceImpl implements ButtonService {
                         )
                 );
 
+
+        }
+        return null;
+    }
+
+    @Override
+    public ReplyKeyboard getAdminButton(User user) {
+        State value = State.values()[user.getState().ordinal()];
+        switch (value) {
+            case ADMIN_HOME:
+                return btn.markupReplay(
+                        btn.rowList(
+                                btn.row(
+                                        btn.button("Dashboard", false, false),
+                                        btn.button("Ads", false, false)
+                                ),
+                                btn.row(
+                                        btn.button("Top users", false, false)
+                                )
+                        ));
+            case ADS_HOME:
+                return btn.markupReplay(
+                        btn.rowList(
+                                btn.row(
+                                        btn.button("New ADS", false, false),
+                                        btn.button("history", false, false)
+                                ),
+                                btn.row(
+                                        btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false)
+                                )
+                        ));
+            case ADS_ADD_TEXT:
+            case ADS_ADD_MEDIA:
+                return btn.markupReplay(
+                        btn.rowList(btn.row(
+                                btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false)
+                        ))
+                );
+            case ADS_ADD_BUTTON:
+                return btn.markupReplay(
+                        btn.rowList(
+                                btn.row(
+                                        btn.button("Uzbeklarga", false, false),
+                                        btn.button("Ruslarga", false, false),
+                                        btn.button("Inglizlarga", false, false)
+                                        ),
+                                btn.row(
+                                        btn.button("Hammaga", false, false),
+                                        btn.button("Bekor qilish", false, false),
+                                        btn.button(langTextService.getTxt(user, "Ortga", "Back", "Назад"), false, false)
+                                ))
+                );
+
+
+            case PAYMENT_ENTER_SUM:
+                break;
         }
         return null;
     }

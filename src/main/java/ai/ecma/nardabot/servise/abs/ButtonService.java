@@ -2,6 +2,7 @@ package ai.ecma.nardabot.servise.abs;
 
 import ai.ecma.nardabot.entity.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 public interface ButtonService {
@@ -9,4 +10,5 @@ public interface ButtonService {
 
     ReplyKeyboardMarkup getBtn(User user);
 
+    ReplyKeyboard getAdminButton(User user);
 }
